@@ -14,6 +14,13 @@
         <version>2.3.2</version>
         <configuration>
           <outputDirectory>${project.build.directory}/../dist</outputDirectory>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+              <mainClass>com.apsv.MainApp</mainClass>
+            </manifest>
+          </archive>
         </configuration>
       </plugin>
       <plugin>
@@ -36,9 +43,35 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.10</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>com.darcula</groupId>
+      <artifactId>darcula-lnf</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>/Users/WXQ/Desktop/APSV-GUI/src/main/lib/darcula.jar</systemPath>
+    </dependency>
+  </dependencies>
   <properties>
+    <forms_rt.version>7.0.3</forms_rt.version>
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
   </properties>
