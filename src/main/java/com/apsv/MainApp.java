@@ -1,4 +1,4 @@
-package com.wxq.apsv;
+package com.apsv;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -4,9 +4,8 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import org.tbee.javafx.scene.layout.fxml.MigPane?>
-<?import layouttests.migfxml.sample1.*?>
 
-<MigPane id="rootPane" fx:controller="com.wxq.apsv.HelloController"
+<MigPane id="rootPane" fx:controller="com.apsv.controller.HelloController"
          styleClass="main-panel"
          layout="insets 20"
          cols="[label, pref!][grow, 50::]"
@@ -19,5 +18,4 @@
     <Button text="Say Hello" onAction="#sayHello" MigPane.cc="skip, gap :push, gaptop 15, wrap" />
 
     <Label fx:id="messageLabel" styleClass="hello-message" MigPane.cc="span, growx, gaptop 15" />
-
 </MigPane >

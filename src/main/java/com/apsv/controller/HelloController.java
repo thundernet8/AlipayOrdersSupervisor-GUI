@@ -1,4 +1,4 @@
-package com.wxq.apsv;
+package com.apsv.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
