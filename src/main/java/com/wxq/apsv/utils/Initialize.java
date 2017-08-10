@@ -11,7 +11,10 @@ public class Initialize {
 
     public static Settings settings = Settings.getInstance();
 
-    public static void InitTheme(){
+    /**
+     * 初始化主题配置
+     */
+    public static void InitTheme() {
         try {
             switch (settings.getTheme()) {
                 case "BeautyEye":
@@ -24,5 +27,17 @@ public class Initialize {
         } catch (Exception e) {
             logger.error(e.toString());
         }
+    }
+
+    public static void InitTabs() {
+        // TODO
+    }
+
+    public static void InitShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("App is shutting down!");
+            // TODO more dispose
+            settings.Save();
+        }));
     }
 }

@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.wxq.apsv.enums.*;
+
 public class Settings {
     private static final Logger logger = LoggerFactory.getLogger(Settings.class);
 
@@ -18,13 +20,14 @@ public class Settings {
 
     private Properties props;
 
-//    private String theme;
+    private String theme;
+    private WinTab currentTab;
 
     public static Settings getInstance(){
         return instance;
     }
 
-    private Settings(){
+    private Settings() {
         file = new File("config/config.properties");
         File dir = new File("config/");
         if (!file.exists()){
@@ -51,6 +54,7 @@ public class Settings {
             props.load(new FileInputStream(file.getPath()));
 
             props.setProperty("settings.appearance.theme", "Darcula");
+            props.setProperty("settings.ui.tab", WinTab.CONFIGTASKS.name());
 
             this.Save();
         } catch (IOException e) {
@@ -58,7 +62,7 @@ public class Settings {
         }
     }
 
-    public void Save(){
+    public void Save() {
         try {
             props.store(new FileOutputStream(file.getPath()), "Copyright (c) 2017");
         } catch (IOException e) {
@@ -66,11 +70,19 @@ public class Settings {
         }
     }
 
-    public String getTheme(){
+    public String getTheme() {
         return props.getProperty("settings.appearance.theme", "Darcula");
     }
 
     public void setTheme(String theme) {
         props.setProperty("settings.appearance.theme", theme);
+    }
+
+    public WinTab getCurrentTab() {
+        return WinTab.valueOf(props.getProperty("settings.ui.tab"));
+    }
+
+    public void setCurrentTab(WinTab tab) {
+        props.setProperty("settings.ui.tab", tab.name());
     }
 }
