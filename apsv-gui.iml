@@ -11,8 +11,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.miglayout:miglayout-javafx:5.0" level="project" />
-    <orderEntry type="library" name="Maven: com.miglayout:miglayout-core:5.0" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.12" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.12" level="project" />
@@ -24,14 +22,7 @@
     <orderEntry type="library" name="Maven: asm:asm:3.0" level="project" />
     <orderEntry type="library" name="Maven: com.jgoodies:forms:1.1-preview" level="project" />
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
-    <orderEntry type="module-library">
-      <library name="Maven: com.darcula:darcula-lnf:1.0">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/main/lib/darcula.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Maven: com.darcula:darcula-lnf:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.beautyeye:beautyeye-lnf:1.0" level="project" />
   </component>
 </module>

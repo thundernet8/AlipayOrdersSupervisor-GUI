@@ -1,4 +1,4 @@
-package com.apsv.model;
+package com.wxq.apsv.model;
 
 public class DemoModel {
 }
