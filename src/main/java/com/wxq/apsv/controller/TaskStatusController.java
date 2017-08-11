@@ -29,18 +29,18 @@ public class TaskStatusController extends JPanel implements TabController {
 
     private void InitListeners() {
         // Test
-        JPanel taskListPane = new TaskListPane();
-        TaskListModel taskListModel = new TaskListModel();
-        taskListModel.RegisterObserver((Observer) taskListPane);
+//        JPanel taskListPane = new TaskListPane();
+//        TaskListModel taskListModel = new TaskListModel();
+//        taskListModel.RegisterObserver((Observer) taskListPane);
 
         button1 = new JButton();
-        button1.setText("Button");
+        button1.setText("Button000");
         this.add(button1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 30), new Dimension(100, 30), new Dimension(100, 30), 1, false));
 
 
-        button1.addActionListener((ActionEvent e) -> {
-            logger.debug("Button1 clicked");
-            taskListModel.AddTask(new ApsvTask((int)Math.floor(Math.random() * 100)));
-        });
+//        button1.addActionListener((ActionEvent e) -> {
+//            logger.debug("Button1 clicked");
+//            taskListModel.AddTask(new ApsvTask((int)Math.floor(Math.random() * 100)));
+//        });
     }
 }

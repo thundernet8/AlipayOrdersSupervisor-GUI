@@ -56,14 +56,17 @@ public class MainController {
 
         final JPanel taskStatusPanel = new TaskStatusController();
         configTaskPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        taskStatusPanel.setBackground(new Color(255,255,255));
         tabbedPane.addTab("任务状态", taskStatusPanel);
 
         final JPanel settingPanel = new SettingController();
         settingPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        settingPanel.setBackground(Color.red);
         tabbedPane.addTab("设置", settingPanel);
 
         final JPanel aboutPanel = new AboutController();
         aboutPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        aboutPanel.setBackground(new Color(255,255,255));
         tabbedPane.addTab("关于", aboutPanel);
 
         tabbedPane.setSelectedIndex(Settings.getInstance().getCurrentTab().ordinal());
