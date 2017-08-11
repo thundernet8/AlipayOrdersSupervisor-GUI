@@ -6,5 +6,6 @@ package com.wxq.apsv.enums;
 public enum WinTab {
     CONFIGTASKS,
     TASKSTATUS,
+    SETTINGS,
     ABOUT
 }

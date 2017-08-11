@@ -15,7 +15,7 @@ public class TaskListPane extends JPanel implements Observer {
     @Override
     public void Update(ObservableSubject s) {
         // TODO
-        logger.info("TaskListPane update");
+        logger.debug("TaskListPane update");
         if (s.getClass() == TaskListModel.class) {
             TaskListModel ts = (TaskListModel)s;
             ts.getTasks().forEach(task -> System.out.print("Task " + task.id + "; "));

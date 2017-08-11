@@ -138,5 +138,12 @@
             <artifactId>beautyeye-lnf</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!-- JSON Helper -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20170516</version>
+        </dependency>
     </dependencies>
 </project>

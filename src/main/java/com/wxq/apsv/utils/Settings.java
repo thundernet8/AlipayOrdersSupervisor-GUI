@@ -22,6 +22,8 @@ public class Settings {
 
     private String theme;
     private WinTab currentTab;
+    private String font;
+    private int fontSize;
 
     public static Settings getInstance(){
         return instance;
@@ -70,6 +72,14 @@ public class Settings {
         }
     }
 
+    public String getProps(String key) {
+        return props.getProperty(key);
+    }
+
+    public void setProps(String key, String value) {
+        props.setProperty(key, value);
+    }
+
     public String getTheme() {
         return props.getProperty("settings.appearance.theme", "Darcula");
     }
@@ -84,5 +94,21 @@ public class Settings {
 
     public void setCurrentTab(WinTab tab) {
         props.setProperty("settings.ui.tab", tab.name());
+    }
+
+    public String getFont() {
+        return props.getProperty("settings.ui.font");
+    }
+
+    public void setFont(String font) {
+        props.setProperty("settings.ui.font", font);
+    }
+
+    public int getFontSize() {
+        return Integer.parseInt(props.getProperty("settings.ui.font.size", "16"));
+    }
+
+    public void setFontSize(int size) {
+        props.setProperty("settings.ui.font.size", Integer.toString(size));
     }
 }

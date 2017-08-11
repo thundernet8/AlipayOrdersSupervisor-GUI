@@ -5,6 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
 import javax.swing.*;
+import javax.swing.plaf.*;
+import java.awt.*;
+import java.util.Enumeration;
+import org.apache.commons.lang.StringUtils;
 
 public class Initialize {
     private static final Logger logger = LoggerFactory.getLogger(Initialize.class);
@@ -26,6 +30,28 @@ public class Initialize {
             }
         } catch (Exception e) {
             logger.error(e.toString());
+        }
+    }
+
+    /**
+     * 初始化字体
+     */
+    public static void InitFont() {
+        String lowDpiKey = "lowDpiInit";
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        if (screenSize.width <= 1366 && StringUtils.isEmpty(settings.getProps(lowDpiKey))) {
+            settings.setFontSize(15);
+            settings.setProps(lowDpiKey, "true");
+            settings.Save();
+        }
+
+        Font fnt = new Font(settings.getFont(), Font.PLAIN, settings.getFontSize());
+        FontUIResource fontRes = new FontUIResource(fnt);
+        for (Enumeration keys = UIManager.getDefaults().keys(); keys.hasMoreElements(); ) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof FontUIResource)
+                UIManager.put(key, fontRes);
         }
     }
 

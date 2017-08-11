@@ -3,38 +3,29 @@ package com.wxq.apsv.controller;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.wxq.apsv.interfaces.TabController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wxq.apsv.interfaces.Observer;
 import com.wxq.apsv.model.*;
 import com.wxq.apsv.view.*;
+import com.wxq.apsv.utils.*;
+import com.wxq.apsv.enums.*;
 
 public class MainController {
     private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 
     private JPanel mainPanel;
-    private JButton button1;
+    private JTabbedPane tabbedPane;
 
     private MainController() {
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        button1 = new JButton();
-        button1.setText("Button");
-        mainPanel.add(button1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 30), new Dimension(100, 30), new Dimension(100, 30), 1, false));
-
-        // Test
-        JPanel taskListPane = new TaskListPane();
-        TaskListModel taskListModel = new TaskListModel();
-        taskListModel.RegisterObserver((Observer) taskListPane);
-
-        button1.addActionListener((ActionEvent e) -> {
-            logger.info("Button1 clicked");
-            taskListModel.AddTask(new ApsvTask((int)Math.floor(Math.random() * 100)));
-        });
+        this.InitView();
+        this.InitListeners();
     }
 
     public static void Launch() {
@@ -49,5 +40,41 @@ public class MainController {
         frame.setTitle(Constants.APP_NAME);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private void InitView() {
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+
+        tabbedPane = new JTabbedPane();
+        mainPanel.add(tabbedPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+
+        // Add Tabs
+        final JPanel configTaskPanel = new ConfigTaskController();
+        configTaskPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        tabbedPane.addTab("配置任务", configTaskPanel);
+
+        final JPanel taskStatusPanel = new TaskStatusController();
+        configTaskPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        tabbedPane.addTab("任务状态", taskStatusPanel);
+
+        final JPanel settingPanel = new SettingController();
+        settingPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        tabbedPane.addTab("设置", settingPanel);
+
+        final JPanel aboutPanel = new AboutController();
+        aboutPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        tabbedPane.addTab("关于", aboutPanel);
+
+        tabbedPane.setSelectedIndex(Settings.getInstance().getCurrentTab().ordinal());
+    }
+
+    private void InitListeners() {
+        // Tab 切换
+        tabbedPane.addChangeListener((ChangeEvent e) -> {
+            logger.debug(Integer.toString(tabbedPane.getSelectedIndex()));
+            TabController tabController = (TabController)tabbedPane.getSelectedComponent();
+            Settings.getInstance().setCurrentTab(tabController.getTabType());
+        });
     }
 }

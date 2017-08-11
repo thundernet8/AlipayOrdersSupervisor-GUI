@@ -13,6 +13,8 @@ public class App {
 
         Initialize.InitTheme();
 
+        Initialize.InitFont();
+
         Initialize.InitShutdownHook();
 
         MainController.Launch();
