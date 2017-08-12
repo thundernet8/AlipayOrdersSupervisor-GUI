@@ -3,6 +3,7 @@ package com.wxq.apsv.controller;
 import javax.swing.*;
 
 import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.wxq.apsv.enums.*;
 import com.wxq.apsv.interfaces.*;
 import org.slf4j.Logger;
@@ -34,11 +35,7 @@ public class AboutController extends JPanel implements TabController {
     }
 
     private void InitViews() {
-        this.linkLabel = new JLabel("test");
-        linkLabel.setText("abc");
-        linkLabel.setPreferredSize(new Dimension(100, 300));
-        linkLabel.setMinimumSize(new Dimension(100, 300));
-        add(linkLabel, BorderLayout.SOUTH);
+        this.setLayout(new GridLayoutManager(1, 1, new Insets(10, 10, 10, 10), -1, -1));
     }
 
     private void InitListeners() {

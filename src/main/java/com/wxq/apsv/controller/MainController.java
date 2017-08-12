@@ -44,31 +44,20 @@ public class MainController {
 
     private void InitView() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(10, 0, 0, 0), -1, -1));
 
         tabbedPane = new JTabbedPane();
         mainPanel.add(tabbedPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
 
         // Add Tabs
         final JPanel configTaskPanel = new ConfigTaskController();
-        configTaskPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        tabbedPane.addTab("配置任务", configTaskPanel);
-
         final JPanel taskStatusPanel = new TaskStatusController();
-        configTaskPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        taskStatusPanel.setBackground(new Color(255,255,255));
-        tabbedPane.addTab("任务状态", taskStatusPanel);
-
         final JPanel settingPanel = new SettingController();
-        settingPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        settingPanel.setBackground(Color.red);
-        tabbedPane.addTab("设置", settingPanel);
-
         final JPanel aboutPanel = new AboutController();
-        aboutPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        aboutPanel.setBackground(new Color(255,255,255));
+        tabbedPane.addTab("配置任务", configTaskPanel);
+        tabbedPane.addTab("任务状态", taskStatusPanel);
+        tabbedPane.addTab("设置", settingPanel);
         tabbedPane.addTab("关于", aboutPanel);
-
         tabbedPane.setSelectedIndex(Settings.getInstance().getCurrentTab().ordinal());
     }
 
