@@ -37,6 +37,7 @@ public class TaskListModel implements ObservableSubject {
     }
 
     public void AddTask(ApsvTask task) {
+        task.id = this.tasks.size() + 1;
         logger.debug("Add task with id: {}", task.id);
         this.tasks.add(task);
         NotifyAllObservers();

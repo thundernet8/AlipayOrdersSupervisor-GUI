@@ -29,7 +29,7 @@ public class ApsvTask {
     // 任务执行并自动退出的时间(s), 0则表示无限运行直到手动终止
     public int executeTime = 0;
 
-    public ApsvTask(int id) {
-        this.id = id;
+    public ApsvTask() {
+
     }
 }
