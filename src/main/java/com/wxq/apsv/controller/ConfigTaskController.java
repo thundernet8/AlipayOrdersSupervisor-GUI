@@ -29,12 +29,14 @@ public class ConfigTaskController extends JPanel implements TabController {
     private TaskListTable taskListTable;
     private TaskListModel taskListModel;
 
+    private int editingTaskId = 0;
+
     // Form字段
-    private JTextField taskNameField = new JTextField();
-    private JTextField taskNoteField = new JTextField();
-    private JTextField pushApiField = new JTextField();
-    private JTextField pushSecretField = new JTextField();
-    private JTextArea alipayCookieField = new JTextArea();
+    private JTextField taskNameField = new JTextField("1");
+    private JTextField taskNoteField = new JTextField("2");
+    private JTextField pushApiField = new JTextField("3");
+    private JTextField pushSecretField = new JTextField("4");
+    private JTextArea alipayCookieField = new JTextArea("5");
     private JButton addTaskBtn = new JButton("添加", new ImageIcon(getClass().getResource("/images/icons/add.png")));
 
     @Override
@@ -107,36 +109,26 @@ public class ConfigTaskController extends JPanel implements TabController {
     private void InitTaskListTable() {
         // 任务列表Table
         this.taskListTable = new TaskListTable();
-        this.taskListTable.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         JScrollPane scrollPane = new JScrollPane(taskListTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 //        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(40, 0));
         this.wrapperPanel.add(scrollPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(600, 50), null, 0, false));
 
-//        this.taskListTable.setAutoCreateColumnsFromModel(true);
+        this.taskListTable.setAutoCreateColumnsFromModel(true);
 
         // Columns
-        taskListTable.columns = new String[]{"ID", "名称", "备注", "Push地址", "操作"};
+        taskListTable.columns = new String[]{"序号", "名称", "备注", "Push地址", "状态", "操作"};
 
         // Data Rows
         taskListTable.setModel(new DefaultTableModel(null, taskListTable.columns));
 
+        // Actions
+        new TaskActionsColumn(taskListTable, taskListTable.columns.length - 1, (ActionEvent e, int row, int column, TaskAction action) -> {
+            logger.info("row {} col {} action {}", row, column, action);
+        });
+
         // 注册Observer
         this.taskListModel = new TaskListModel();
         this.taskListModel.RegisterObserver(this.taskListTable);
-        this.taskListModel.NotifyAllObservers();
-
-        // 行高列宽
-        this.taskListTable.setRowHeight(40);
-        this.taskListTable.getColumnModel().getColumn(0).setPreferredWidth(100);
-        this.taskListTable.getColumnModel().getColumn(0).setMaxWidth(100);
-        this.taskListTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-        this.taskListTable.getColumnModel().getColumn(1).setMaxWidth(200);
-        this.taskListTable.getColumnModel().getColumn(2).setPreferredWidth(250);
-        this.taskListTable.getColumnModel().getColumn(2).setMaxWidth(250);
-        this.taskListTable.getColumnModel().getColumn(3).setPreferredWidth(250);
-        this.taskListTable.getColumnModel().getColumn(3).setMaxWidth(250);
-
-        this.updateUI();
     }
 
     private void InitListeners() {
@@ -144,6 +136,34 @@ public class ConfigTaskController extends JPanel implements TabController {
         this.addTaskBtn.addActionListener((ActionEvent e) -> {
             this.AddTask();
         });
+
+        // Task remove/edit actions
+        this.taskListTable.addColumnActionListener((ActionEvent e, int row, int column, TaskAction action) -> {
+            logger.info("row {} col {} action {}", row, column, action);
+            if (column != taskListTable.columns.length - 1) {
+                return;
+            }
+            if (action == TaskAction.REMOVE) {
+                this.RemoveTask(row);
+            } else if (action == TaskAction.EDIT) {
+                this.EditingTask(row);
+            }
+        });
+    }
+
+    private void RenderTaskForm(ApsvTask task) {
+        this.editingTaskId = task.id;
+        this.taskNameField.setText(task.name);
+        this.taskNoteField.setText(task.note);
+        this.pushApiField.setText(task.pushApi);
+        this.pushSecretField.setText(task.pushSecret);
+        this.alipayCookieField.setText(task.cookie);
+
+        if (task.id > 0) {
+            this.addTaskBtn.setText("更新");
+        } else {
+            this.addTaskBtn.setText("添加");
+        }
     }
 
     /**
@@ -160,6 +180,7 @@ public class ConfigTaskController extends JPanel implements TabController {
             JOptionPane.showMessageDialog(this.wrapperPanel, "任务名, api地址, secret以及cookie不能为空");
             return;
         }
+        int _id = this.editingTaskId;
         this.taskListModel.AddTask(new ApsvTask(){
             {
                 name = _name;
@@ -167,7 +188,32 @@ public class ConfigTaskController extends JPanel implements TabController {
                 cookie = _cookie;
                 pushApi = _api;
                 pushSecret = _secret;
+                id = _id;
             }
         });
+        this.RenderTaskForm(new ApsvTask());
+    }
+
+    /**
+     * 删除任务
+     * @param taskIndex
+     */
+    private void RemoveTask(int taskIndex) {
+        int isDelete = JOptionPane.showConfirmDialog(Frame.getFrames()[0], "确认移除？", "确认",
+                JOptionPane.INFORMATION_MESSAGE);
+        if (isDelete == JOptionPane.YES_OPTION) {
+            logger.info("Remove task at index {}", taskIndex);
+            this.taskListModel.RemoveTask(taskIndex);
+            this.RenderTaskForm(new ApsvTask());
+        }
+    }
+
+    /**
+     * 设置编辑任务
+     * @param taskIndex
+     */
+    private void EditingTask(int taskIndex) {
+        ApsvTask task = this.taskListModel.getTasks().get(taskIndex);
+        this.RenderTaskForm(task);
     }
 }

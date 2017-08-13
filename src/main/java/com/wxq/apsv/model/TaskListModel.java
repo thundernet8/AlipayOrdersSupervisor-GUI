@@ -22,6 +22,7 @@ public class TaskListModel implements ObservableSubject {
     @Override
     public void RegisterObserver(Observer o) {
         configTaskViews.add(o);
+        o.Update(this);
     }
 
     @Override
@@ -37,14 +38,18 @@ public class TaskListModel implements ObservableSubject {
     }
 
     public void AddTask(ApsvTask task) {
-        task.id = this.tasks.size() + 1;
+        if (task.id > 0) {
+            this.tasks.removeIf(t -> t.id == task.id);
+        } else {
+            task.id = this.tasks.size() + 1;
+        }
         logger.debug("Add task with id: {}", task.id);
         this.tasks.add(task);
         NotifyAllObservers();
     }
 
-    public void RemoveTask(ApsvTask task) {
-        boolean remove = this.tasks.removeIf(t -> t.id == task.id);
+    public void RemoveTask(int taskIndex) {
+        boolean remove = this.tasks.removeIf(t -> t.id == taskIndex + 1);
         if (remove) {
             NotifyAllObservers();
         }

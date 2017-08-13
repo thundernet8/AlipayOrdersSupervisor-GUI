@@ -3,8 +3,6 @@ package com.wxq.apsv.controller;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.wxq.apsv.interfaces.*;
-import com.wxq.apsv.model.*;
-import com.wxq.apsv.view.*;
 import com.wxq.apsv.enums.*;
 
 import org.slf4j.Logger;
@@ -12,14 +10,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
-public class TaskStatusController extends JPanel implements TabController {
-    private final static Logger logger = LoggerFactory.getLogger(TaskStatusController.class);
+public class TaskDetailController extends JPanel implements TabController {
+    private final static Logger logger = LoggerFactory.getLogger(TaskDetailController.class);
 
     private JButton button1;
 
-    public TaskStatusController() {
+    public TaskDetailController() {
         this.InitViews();
         this.InitListeners();
     }
