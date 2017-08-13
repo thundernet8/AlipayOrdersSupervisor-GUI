@@ -24,6 +24,7 @@ public class Settings {
     private WinTab currentTab;
     private String font;
     private int fontSize;
+    private String tasks;
 
     public static Settings getInstance(){
         return instance;
@@ -110,5 +111,13 @@ public class Settings {
 
     public void setFontSize(int size) {
         props.setProperty("settings.ui.font.size", Integer.toString(size));
+    }
+
+    public String getTasks() {
+        return props.getProperty("app.data.tasks");
+    }
+
+    public void setTasks(String tasks) {
+        props.setProperty("app.data.tasks", tasks);
     }
 }

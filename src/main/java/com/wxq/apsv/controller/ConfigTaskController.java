@@ -127,7 +127,7 @@ public class ConfigTaskController extends JPanel implements TabController {
         });
 
         // 注册Observer
-        this.taskListModel = new TaskListModel();
+        this.taskListModel = TaskListModel.getInstance();
         this.taskListModel.RegisterObserver(this.taskListTable);
     }
 

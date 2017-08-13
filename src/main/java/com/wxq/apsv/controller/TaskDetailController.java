@@ -5,6 +5,8 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.wxq.apsv.interfaces.*;
 import com.wxq.apsv.enums.*;
 
+import com.wxq.apsv.model.TaskListModel;
+import com.wxq.apsv.view.TaskDetailPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,9 @@ import java.awt.*;
 public class TaskDetailController extends JPanel implements TabController {
     private final static Logger logger = LoggerFactory.getLogger(TaskDetailController.class);
 
-    private JButton button1;
+    private TaskListModel taskListModel;
+
+    private TaskDetailPane taskDetailPane;
 
     public TaskDetailController() {
         this.InitViews();
@@ -27,22 +31,16 @@ public class TaskDetailController extends JPanel implements TabController {
     }
 
     private void InitViews() {
-        this.setLayout(new GridLayoutManager(1, 1, new Insets(10, 10, 10, 10), -1, -1));
+        setLayout(new GridLayoutManager(1, 1, new Insets(10, 10, 10, 10), -1, -1));
+
+        taskDetailPane = new TaskDetailPane();
+        add(taskDetailPane, new GridConstraints(0, 0, 1, 1, 0, 3, 1|2, 1|2, null, null, null, 0, false));
+
+        taskListModel = TaskListModel.getInstance();
+        taskListModel.RegisterObserver(taskDetailPane);
     }
 
     private void InitListeners() {
-        // Test
-//        JPanel taskListPane = new TaskListPane();
-//        TaskListModel taskListModel = new TaskListModel();
-//        taskListModel.RegisterObserver((Observer) taskListPane);
 
-        button1 = new JButton();
-        button1.setText("Button000");
-        add(button1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 30), new Dimension(100, 30), new Dimension(100, 30), 1, false));
-
-//        button1.addActionListener((ActionEvent e) -> {
-//            logger.debug("Button1 clicked");
-//            taskListModel.AddTask(new ApsvTask((int)Math.floor(Math.random() * 100)));
-//        });
     }
 }
