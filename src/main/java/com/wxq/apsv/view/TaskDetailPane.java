@@ -13,7 +13,11 @@ public class TaskDetailPane extends JPanel implements Observer {
 
     @Override
     public void Update(ObservableSubject s) {
-
+        if (s instanceof TaskListModel) {
+            TaskListModel taskListModel = (TaskListModel)s;
+            DefaultComboBoxModel model = new DefaultComboBoxModel(taskListModel.getTasks().stream().map(t -> t.name).toArray());
+            this.taskSelector.setModel(model);
+        }
     }
 
     public JComboBox getTaskSelector() {
@@ -28,9 +32,12 @@ public class TaskDetailPane extends JPanel implements Observer {
         this.setLayout(new GridLayoutManager(5, 12, new Insets(5, 10, 20, 5), -1, 5));
 
         // Task selector
-        add(new JLabel("选择任务"), new GridConstraints(0, 0, 1, 2, 8, 0, 0, 0, null, new Dimension(120, -1), null, 0, false));
+        // TODO selector item id and display text
+        add(new JLabel("选择任务"), new GridConstraints(0, 0, 1, 1, 8, 0, 0, 0, null, new Dimension(80, 36), new Dimension(-1, 36), 0, false));
 
         taskSelector = new JComboBox();
-        add(taskSelector, new GridConstraints(0, 2, 1, 3, 8, 0, 2, 0, new Dimension(100, -1), null, null, 0, false));
+        add(taskSelector, new GridConstraints(0, 1, 1, 3, 8, 0, 2, 0, new Dimension(100, -1), null, null, 0, false));
+
+        add(new JLabel(""), new GridConstraints(4, 0, 1, 12, 0, 0, 1|2, 1|2, null, null, null, 0, false));
     }
 }

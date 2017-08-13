@@ -181,7 +181,7 @@ public class ConfigTaskController extends JPanel implements TabController {
             return;
         }
         int _id = this.editingTaskId;
-        this.taskListModel.AddTask(new ApsvTask(){
+        ApsvTask task = new ApsvTask(){
             {
                 name = _name;
                 note = _note;
@@ -190,8 +190,14 @@ public class ConfigTaskController extends JPanel implements TabController {
                 pushSecret = _secret;
                 id = _id;
             }
-        });
-        this.RenderTaskForm(new ApsvTask());
+        };
+        String validate = this.taskListModel.ValidateAdding(task);
+        if (StringUtils.isEmpty(validate)) {
+            this.taskListModel.AddTask(task);
+            this.RenderTaskForm(new ApsvTask());
+        } else {
+            JOptionPane.showMessageDialog(Frame.getFrames()[0], validate, "错误", JOptionPane.YES_OPTION);
+        }
     }
 
     /**

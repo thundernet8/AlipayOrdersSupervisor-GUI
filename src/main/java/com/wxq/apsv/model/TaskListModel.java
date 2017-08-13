@@ -60,6 +60,18 @@ public class TaskListModel implements ObservableSubject {
         }
     }
 
+    /**
+     * 添加任务之前检查任务数据
+     * @param task
+     * @return
+     */
+    public String ValidateAdding(ApsvTask task) {
+        if (tasks.stream().anyMatch(t -> StringUtils.equals(t.name, task.name))) {
+            return "任务名不能重复";
+        }
+        return "";
+    }
+
     public void AddTask(ApsvTask task) {
         if (task.id > 0) {
             this.tasks.removeIf(t -> t.id == task.id);
@@ -73,8 +85,8 @@ public class TaskListModel implements ObservableSubject {
     }
 
     public void RemoveTask(int taskIndex) {
-        boolean remove = this.tasks.removeIf(t -> t.id == taskIndex + 1);
-        if (remove) {
+        if (this.tasks.size() > taskIndex) {
+            this.tasks.remove(taskIndex);
             NotifyAllObservers();
             this.SaveTasks();
         }
