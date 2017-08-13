@@ -32,11 +32,11 @@ public class ConfigTaskController extends JPanel implements TabController {
     private int editingTaskId = 0;
 
     // Form字段
-    private JTextField taskNameField = new JTextField("1");
-    private JTextField taskNoteField = new JTextField("2");
-    private JTextField pushApiField = new JTextField("3");
-    private JTextField pushSecretField = new JTextField("4");
-    private JTextArea alipayCookieField = new JTextArea("5");
+    private JTextField taskNameField = new JTextField("");
+    private JTextField taskNoteField = new JTextField("");
+    private JTextField pushApiField = new JTextField("");
+    private JTextField pushSecretField = new JTextField("");
+    private JTextArea alipayCookieField = new JTextArea("");
     private JButton addTaskBtn = new JButton("添加", new ImageIcon(getClass().getResource("/images/icons/add.png")));
 
     @Override
@@ -200,7 +200,7 @@ public class ConfigTaskController extends JPanel implements TabController {
      */
     private void RemoveTask(int taskIndex) {
         int isDelete = JOptionPane.showConfirmDialog(Frame.getFrames()[0], "确认移除？", "确认",
-                JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.YES_NO_OPTION);
         if (isDelete == JOptionPane.YES_OPTION) {
             logger.info("Remove task at index {}", taskIndex);
             this.taskListModel.RemoveTask(taskIndex);
