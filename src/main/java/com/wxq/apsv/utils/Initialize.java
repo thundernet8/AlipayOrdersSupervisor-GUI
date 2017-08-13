@@ -55,10 +55,6 @@ public class Initialize {
         }
     }
 
-    public static void InitTabs() {
-        // TODO
-    }
-
     public static void InitShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("App is shutting down!");
