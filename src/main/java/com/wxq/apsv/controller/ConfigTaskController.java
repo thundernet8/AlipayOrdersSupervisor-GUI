@@ -115,14 +115,11 @@ public class ConfigTaskController extends JPanel implements TabController {
 
         this.taskListTable.setAutoCreateColumnsFromModel(true);
 
-        // Columns
-        taskListTable.columns = new String[]{"序号", "名称", "备注", "Push地址", "状态", "操作"};
-
         // Data Rows
-        taskListTable.setModel(new DefaultTableModel(null, taskListTable.columns));
+        taskListTable.setModel(new DefaultTableModel(null, taskListTable.getColumns()));
 
         // Actions
-        new TaskActionsColumn(taskListTable, taskListTable.columns.length - 1, (ActionEvent e, int row, int column, TaskAction action) -> {
+        new TaskActionsColumn(taskListTable, taskListTable.getColumns().length - 1, (ActionEvent e, int row, int column, TaskAction action) -> {
             logger.info("row {} col {} action {}", row, column, action);
         });
 
@@ -140,7 +137,7 @@ public class ConfigTaskController extends JPanel implements TabController {
         // Task remove/edit actions
         this.taskListTable.addColumnActionListener((ActionEvent e, int row, int column, TaskAction action) -> {
             logger.info("row {} col {} action {}", row, column, action);
-            if (column != taskListTable.columns.length - 1) {
+            if (column != taskListTable.getColumns().length - 1) {
                 return;
             }
             if (action == TaskAction.REMOVE) {

@@ -26,6 +26,9 @@ public class Settings {
     private int fontSize;
     private String tasks;
 
+    // 抓取订单时间间隔(s)
+    private int grapInterval = 60;
+
     public static Settings getInstance(){
         return instance;
     }
@@ -111,6 +114,14 @@ public class Settings {
 
     public void setFontSize(int size) {
         props.setProperty("settings.ui.font.size", Integer.toString(size));
+    }
+
+    public int getGrapInterval() {
+        return Integer.parseInt(props.getProperty("settings.task.interval", "60"));
+    }
+
+    public void setGrapInterval(int interval) {
+        props.setProperty("settings.task.interval", Integer.toString(interval));
     }
 
     public String getTasks() {

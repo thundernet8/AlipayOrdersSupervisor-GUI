@@ -29,9 +29,9 @@ public class RunTasksModel implements ObservableSubject {
         }
     }
 
-    public static RunTasksModel getInstance(TaskListModel model) {
+    public static RunTasksModel getInstance() {
         if (instance == null) {
-            instance = new RunTasksModel(model);
+            instance = new RunTasksModel(TaskListModel.getInstance());
         }
         return instance;
     }

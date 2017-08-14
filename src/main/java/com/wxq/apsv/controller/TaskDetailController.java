@@ -7,11 +7,14 @@ import com.wxq.apsv.enums.*;
 
 import com.wxq.apsv.model.RunTasksModel;
 import com.wxq.apsv.model.TaskListModel;
+import com.wxq.apsv.view.OrderListTable;
+import com.wxq.apsv.view.OrderActionsColumn;
 import com.wxq.apsv.view.TaskDetailPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -25,10 +28,10 @@ public class TaskDetailController extends JPanel implements TabController {
 
     private TaskDetailPane taskDetailPane;
 
-    public TaskDetailController() {
-        taskListModel = TaskListModel.getInstance();
-        runTasksModel = RunTasksModel.getInstance(taskListModel);
+    private OrderListTable orderListTable;
 
+    public TaskDetailController() {
+        this.InitModels();
         this.InitViews();
         this.InitListeners();
     }
@@ -38,13 +41,38 @@ public class TaskDetailController extends JPanel implements TabController {
         return WinTab.TASKSTATUS;
     }
 
+    private void InitModels() {
+        taskListModel = TaskListModel.getInstance();
+        runTasksModel = RunTasksModel.getInstance();
+    }
+
     private void InitViews() {
         setLayout(new GridLayoutManager(1, 1, new Insets(10, 10, 10, 10), -1, -1));
 
         taskDetailPane = new TaskDetailPane(runTasksModel);
         add(taskDetailPane, new GridConstraints(0, 0, 1, 1, 0, 3, 1|2, 1|2, null, null, null, 0, false));
 
+        InitOrderListTable();
+    }
 
+    private void InitOrderListTable() {
+        // 订单列表Table
+        this.orderListTable = new OrderListTable();
+        JScrollPane scrollPane = new JScrollPane(orderListTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        taskDetailPane.getBotWrapperPanel().add(scrollPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(600, 50), null, 0, false));
+
+        this.orderListTable.setAutoCreateColumnsFromModel(true);
+
+        // Data Rows
+        orderListTable.setModel(new DefaultTableModel(null, orderListTable.getColumns()));
+
+        // Actions
+        new OrderActionsColumn(orderListTable, orderListTable.getColumns().length - 1, (ActionEvent e, int row, int column, OrderAction action) -> {
+            logger.info("row {} col {} action {}", row, column, action);
+        });
+
+        // 注册Observer
+        runTasksModel.RegisterObserver(this.orderListTable);
     }
 
     private void InitListeners() {
@@ -57,9 +85,19 @@ public class TaskDetailController extends JPanel implements TabController {
         });
 
         taskDetailPane.getTaskSelector().addItemListener((ItemEvent e) -> {
-            logger.info(e.toString());
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 runTasksModel.SelectTask(e.getItem().toString());
+            }
+        });
+
+        // order repush action
+        this.orderListTable.addColumnActionListener((ActionEvent e, int row, int column, OrderAction action) -> {
+            logger.info("row {} col {} action {}", row, column, action);
+            if (column != orderListTable.getColumns().length - 1) {
+                return;
+            }
+            if (action == OrderAction.REPUSH) {
+                // TODO repush
             }
         });
     }

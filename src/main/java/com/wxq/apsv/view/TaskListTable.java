@@ -30,7 +30,11 @@ final class ApsvTaskStatus {
 public final class TaskListTable extends JTable implements Observer {
     private static final Logger logger = LoggerFactory.getLogger(TaskListTable.class);
 
-    public String[] columns;
+    private String[] columns = new String[]{"序号", "名称", "备注", "Push地址", "状态", "操作"};
+
+    public String[] getColumns() {
+        return columns;
+    }
 
     protected EventListenerList listenerList = new EventListenerList();
 
@@ -96,7 +100,7 @@ public final class TaskListTable extends JTable implements Observer {
             logger.info("row {} col {} action {}", row, column, action);
             Object[] listeners = listenerList.getListenerList();
             for (int i = listeners.length-2; i>=0; i-=2) {
-                if (listeners[i]==TaskColumnActionListener.class) {
+                if (listeners[i] == TaskColumnActionListener.class) {
                     ((TaskColumnActionListener)listeners[i+1]).actionPerformed(new ActionEvent(this, 0, ""), row, column, action);
                 }
             }

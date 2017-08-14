@@ -8,6 +8,8 @@ import com.wxq.apsv.model.*;
 import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -15,16 +17,24 @@ import java.util.stream.Collectors;
 public class TaskDetailPane extends JPanel implements Observer {
     private RunTasksModel runTasksModel;
 
+    private JPanel topWrapperPanel;
+
+    private JPanel botWrapperPanel;
+
     private JComboBox taskSelector;
+
+    private JLabel orderCountLabel;
+
+    private JLabel orderPushedCountLabel;
 
     private JButton runBtn;
 
     @Override
     public void Update(ObservableSubject s) {
-        ArrayList<String> options = new ArrayList<>();
+        ArrayList<ApsvTask> tasks = new ArrayList<>();
         if (s instanceof TaskListModel) {
             TaskListModel model = (TaskListModel)s;
-            options = model.getTasks().stream().map(t -> t.name).collect(Collectors.toCollection(ArrayList::new));
+            tasks = model.getTasks();
         } else if (s instanceof  RunTasksModel) {
             RunTasksModel model = (RunTasksModel)s;
             if (model.getCurrentSelectTask().status == TaskStatus.STOPPED) {
@@ -32,10 +42,13 @@ public class TaskDetailPane extends JPanel implements Observer {
             } else {
                 runBtn.setText("停止");
             }
-            options = runTasksModel.getTasks().stream().map(t -> t.name).collect(Collectors.toCollection(ArrayList::new));
+            tasks = runTasksModel.getTasks();
         }
 
+        ArrayList<String> options = tasks.stream().map(t -> t.name).collect(Collectors.toCollection(ArrayList::new));
+
         UpdateSelector(options);
+        UpdateNums();
     }
 
     private void UpdateSelector(ArrayList<String> options) {
@@ -50,27 +63,75 @@ public class TaskDetailPane extends JPanel implements Observer {
         }
     }
 
+    private void UpdateNums() {
+        ArrayList<ApsvOrder> orders = runTasksModel.getOrders();
+        int taskCount = orders.size();
+        long pushedTaskCount = orders.stream().filter(o -> o.pushed).count();
+        orderCountLabel.setText(Integer.toString(taskCount));
+        orderPushedCountLabel.setText(Long.toString(pushedTaskCount));
+    }
+
     public TaskDetailPane(RunTasksModel model) {
         runTasksModel = model;
         InitComponents();
     }
 
     private void InitComponents() {
-        this.setLayout(new GridLayoutManager(5, 12, new Insets(5, 10, 20, 5), -1, 5));
+        this.setLayout(new GridLayoutManager(2, 1, new Insets(5, 5, 5, 5), -1, 10));
 
-        // Task selector
+        topWrapperPanel = new JPanel();
+        botWrapperPanel = new JPanel();
+        // Border
+        EtchedBorder line = new EtchedBorder();
+        Border border1 = BorderFactory.createTitledBorder(line, "任务状态");
+        Border border2 = BorderFactory.createTitledBorder(line, "订单列表");
+        topWrapperPanel.setBorder(border1);
+        botWrapperPanel.setBorder(border2);
+        topWrapperPanel.setLayout(new GridLayoutManager(2, 12, new Insets(5, 5, 20, 5), -1, 5));
+        botWrapperPanel.setLayout(new GridLayoutManager(1, 1, new Insets(10, 5, 10, 5), -1, 5));
+        add(topWrapperPanel, new GridConstraints(0, 0, 1, 1, 8, 1, 0, 0, null, new Dimension(-1, 100), null, 0, false));
+        add(botWrapperPanel, new GridConstraints(1, 0, 1, 1, 8, 3, 0, 1|2, null, null, null, 0, false));
+
+
+        // Task selector label (Column 1)
         // TODO selector item id and display text
-        add(new JLabel("选择任务"), new GridConstraints(0, 0, 1, 1, 8, 0, 0, 0, null, new Dimension(80, 36), new Dimension(-1, 36), 0, false));
+        topWrapperPanel.add(new JLabel("选择任务"), new GridConstraints(0, 0, 1, 1, 8, 0, 0, 0, null, new Dimension(80, 36), new Dimension(-1, 36), 0, false));
 
+        // Task selector (Column 2)
         taskSelector = new JComboBox();
-        add(taskSelector, new GridConstraints(0, 1, 1, 1, 8, 0, 0, 0, new Dimension(100, -1), null, null, 0, false));
+        topWrapperPanel.add(taskSelector, new GridConstraints(0, 1, 1, 1, 8, 0, 0, 0, new Dimension(100, -1), null, null, 0, false));
 
+        // Run/Stop action button (Column 3)
         runBtn = new JButton("启动");
-        add(runBtn, new GridConstraints(0, 2, 1, 1, 8, 0, 0, 0, null, null, new Dimension(80, -1), 0, false));
+        topWrapperPanel.add(runBtn, new GridConstraints(0, 2, 1, 1, 8, 0, 0, 0, null, null, new Dimension(80, -1), 0, false));
 
-        add(new JLabel(""), new GridConstraints(0, 3, 1, 1, 8, 0, 1|2, 0, null, null, null, 0, false));
+        // Space label (Column 4)
+        topWrapperPanel.add(new JLabel(""), new GridConstraints(0, 3, 1, 1, 8, 0, 1|2, 0, null, null, null, 0, false));
 
-        add(new JLabel(""), new GridConstraints(4, 0, 1, 12, 0, 0, 1|2, 1|2, null, null, null, 0, false));
+        // Orders count label (Column 5)
+        orderCountLabel = new JLabel("0");
+        orderCountLabel.setFont(new Font("", Font.BOLD, 36));
+        orderCountLabel.setForeground(Color.yellow);
+        topWrapperPanel.add(orderCountLabel, new GridConstraints(0, 4, 2, 1, 8, 0, 0, 0, null, null, null, 0, false));
+
+        // Orders count extra label (Column 6)
+        topWrapperPanel.add(new JLabel("抓取订单"), new GridConstraints(0, 5, 2, 1, 8, 0, 0, 0, null, null, null, 0, false));
+
+        // Pushed orders count label (Column 7)
+        orderPushedCountLabel = new JLabel("0");
+        orderPushedCountLabel.setFont(new Font("", Font.BOLD, 36));
+        orderPushedCountLabel.setForeground(Color.green);
+
+        topWrapperPanel.add(orderPushedCountLabel, new GridConstraints(0, 6, 2, 1, 8, 0, 0, 0, null, null, null, 0, false));
+
+        // Pushed orders count extra label (Column 8)
+        topWrapperPanel.add(new JLabel("推送成功"), new GridConstraints(0, 7, 2, 1, 8, 0, 0, 0, null, null, null, 0, false));
+
+        // 右端弹性空间 (Column 12)
+        topWrapperPanel.add(new JLabel(""), new GridConstraints(0, 11, 1, 1, 8, 0, 1|2, 0, null, null, null, 0, false));
+
+        // 底部弹性空间
+        topWrapperPanel.add(new JLabel(""), new GridConstraints(1, 0, 1, 4, 0, 0, 1|2, 1|2, null, null, null, 0, false));
     }
 
     public JButton getRunBtn() {
@@ -79,5 +140,9 @@ public class TaskDetailPane extends JPanel implements Observer {
 
     public JComboBox getTaskSelector() {
         return taskSelector;
+    }
+
+    public JPanel getBotWrapperPanel() {
+        return botWrapperPanel;
     }
 }
