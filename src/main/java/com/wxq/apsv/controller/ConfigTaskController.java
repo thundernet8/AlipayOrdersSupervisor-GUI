@@ -209,8 +209,12 @@ public class ConfigTaskController extends JPanel implements TabController {
                 JOptionPane.YES_NO_OPTION);
         if (isDelete == JOptionPane.YES_OPTION) {
             logger.info("Remove task at index {}", taskIndex);
-            this.taskListModel.RemoveTask(taskIndex);
-            this.RenderTaskForm(new ApsvTask());
+            String removeMsg = this.taskListModel.RemoveTask(taskIndex);
+            if (StringUtils.isEmpty(removeMsg)) {
+                this.RenderTaskForm(new ApsvTask());
+            } else {
+                JOptionPane.showMessageDialog(Frame.getFrames()[0], removeMsg, "错误", JOptionPane.YES_OPTION);
+            }
         }
     }
 

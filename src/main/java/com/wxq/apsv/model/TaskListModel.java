@@ -2,6 +2,7 @@ package com.wxq.apsv.model;
 
 import java.util.ArrayList;
 
+import com.wxq.apsv.enums.TaskStatus;
 import com.wxq.apsv.utils.Settings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class TaskListModel implements ObservableSubject {
     }
 
     public static TaskListModel getInstance() {
-        if (!(instance instanceof TaskListModel)) {
+        if (instance == null) {
             instance = new TaskListModel();
         }
         return instance;
@@ -84,12 +85,17 @@ public class TaskListModel implements ObservableSubject {
         this.SaveTasks();
     }
 
-    public void RemoveTask(int taskIndex) {
+    public String RemoveTask(int taskIndex) {
         if (this.tasks.size() > taskIndex) {
+            ApsvTask task = tasks.get(taskIndex);
+            if (task.status != TaskStatus.STOPPED) {
+                return "任务正在运行, 不能删除";
+            }
             this.tasks.remove(taskIndex);
             NotifyAllObservers();
             this.SaveTasks();
         }
+        return "";
     }
 
     /**
@@ -107,6 +113,14 @@ public class TaskListModel implements ObservableSubject {
         String string = gson.toJson(jsons);
         logger.info("Saving tasks: {}", string);
         Settings.getInstance().setTasks(string);
+    }
+
+    public void MarkTaskStatus(int id, TaskStatus status) {
+        ApsvTask task = tasks.stream().filter(t -> t.id == id).findFirst().get();
+        if (task.status != status) {
+            task.status = status;
+            NotifyAllObservers();
+        }
     }
 
     public ArrayList<ApsvTask> getTasks() {
