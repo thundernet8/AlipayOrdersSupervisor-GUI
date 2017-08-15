@@ -17,4 +17,7 @@ public class ApsvOrder {
 
     // 其他程序运行附带信息
     public boolean pushed = false;
+
+    // md5一些关键信息的hash值，提供给服务端校验
+    public String sig;
 }
