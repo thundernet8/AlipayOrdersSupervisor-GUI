@@ -8,7 +8,7 @@ import com.wxq.apsv.enums.TaskStatus;
 import com.wxq.apsv.interfaces.*;
 import com.wxq.apsv.utils.Settings;
 import com.wxq.apsv.worker.ApsvTimerTask;
-import com.wxq.apsv.worker.PushManager;
+import com.wxq.apsv.worker.ApsvTimerManager;
 import org.apache.commons.lang.StringUtils;
 
 public class RunTasksModel implements ObservableSubject {
@@ -107,18 +107,18 @@ public class RunTasksModel implements ObservableSubject {
         // 开始抓取定时任务
         Timer timer = new Timer();
         timer.schedule(new ApsvTimerTask(currentSelectTask), 2000, Math.max(Settings.getInstance().getGrapInterval() * 1000, 30000));
-        PushManager.AddTimer(timer, currentSelectTask.id);
+        ApsvTimerManager.AddTimer(timer, currentSelectTask.id);
     }
 
     /**
-     *
+     * 停止当前任务
      */
     public void StopTask() {
         this.taskListModel.MarkTaskStatus(currentSelectTask.id, TaskStatus.STOPPED);
         NotifyAllObservers();
 
         // 停止定时抓取任务
-        Timer timer = PushManager.GetTimer(currentSelectTask.id);
+        Timer timer = ApsvTimerManager.GetTimer(currentSelectTask.id);
         if (timer != null) {
             timer.cancel();
             timer.purge();

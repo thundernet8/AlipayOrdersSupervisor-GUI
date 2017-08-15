@@ -2,7 +2,9 @@ package com.wxq.apsv.worker;
 
 import com.wxq.apsv.model.ApsvOrder;
 import com.wxq.apsv.model.ApsvTask;
+import com.wxq.apsv.model.Constants;
 import com.wxq.apsv.model.RunTasksModel;
+import com.wxq.apsv.utils.HttpRequest;
 import org.apache.commons.lang.StringUtils;
 
 import org.slf4j.Logger;
@@ -36,12 +38,23 @@ public class ApsvTimerTask extends TimerTask {
     }
 
     private String getPage() {
-        // TODO
-        return "";
+        // 先请求个人主页
+        String alipayUserCenterPage = HttpRequest.DoGet(Constants.ALIPAY_UC_URL, task.cookie);
+        if (StringUtils.isEmpty(alipayUserCenterPage)) {
+            logger.error("Fetch {} failed", Constants.ALIPAY_UC_URL);
+            return "";
+        }
+
+        String orderListPage = HttpRequest.DoGet(Constants.ALIPAY_ADVANCED_ORDERS_URL, task.cookie);
+        if (StringUtils.isEmpty(orderListPage)) {
+            logger.error("Fetch {} failed", Constants.ALIPAY_ADVANCED_ORDERS_URL);
+        }
+        return orderListPage;
     }
 
     private ArrayList<ApsvOrder> findOrders(String html) {
-        // TODO
+        logger.info("Html: {}", html);
+        // TODO 从html分析orders
         ArrayList<ApsvOrder> orders = new ArrayList<>();
         orders.add(new ApsvOrder(){
             {

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
-public final class PushManager {
+public final class ApsvTimerManager {
     private static Map<String, Timer> timerMap = new HashMap<>();
 
     public static void AddTimer(Timer timer, int taskId) {
