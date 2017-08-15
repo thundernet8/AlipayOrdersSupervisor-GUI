@@ -7,6 +7,8 @@ public class ApsvOrder {
 
     public String datetime;
 
+    public String description;
+
     public String memo;
 
     public String username;
