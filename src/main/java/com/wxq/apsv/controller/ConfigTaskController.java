@@ -136,6 +136,7 @@ public class ConfigTaskController extends JPanel implements TabController {
 
         // Task remove/edit actions
         this.taskListTable.addColumnActionListener((ActionEvent e, int row, int column, TaskAction action) -> {
+            Toolkit.getDefaultToolkit().beep();
             logger.info("row {} col {} action {}", row, column, action);
             if (column != taskListTable.getColumns().length - 1) {
                 return;

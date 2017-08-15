@@ -81,6 +81,7 @@ public class TaskDetailController extends JPanel implements TabController {
         runTasksModel.RegisterObserver(taskDetailPane);
 
         taskDetailPane.getRunBtn().addActionListener((ActionEvent e) -> {
+            Toolkit.getDefaultToolkit().beep();
             runTasksModel.SwitchTaskStatus();
         });
 
