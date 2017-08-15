@@ -1,10 +1,14 @@
 package com.wxq.apsv.model;
 
 import java.util.ArrayList;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 import com.wxq.apsv.enums.TaskStatus;
 import com.wxq.apsv.interfaces.*;
+import com.wxq.apsv.utils.Settings;
+import com.wxq.apsv.worker.ApsvTimerTask;
+import com.wxq.apsv.worker.PushManager;
 import org.apache.commons.lang.StringUtils;
 
 public class RunTasksModel implements ObservableSubject {
@@ -29,7 +33,7 @@ public class RunTasksModel implements ObservableSubject {
         }
     }
 
-    public static RunTasksModel getInstance() {
+    synchronized public static RunTasksModel getInstance() {
         if (instance == null) {
             instance = new RunTasksModel(TaskListModel.getInstance());
         }
@@ -77,12 +81,11 @@ public class RunTasksModel implements ObservableSubject {
     }
 
     synchronized public void AddOrder(ApsvOrder order) {
-        ArrayList<ApsvOrder> taskOrders = orders.stream().filter(o -> o.taskId == order.taskId).collect(Collectors.toCollection(ArrayList::new));
-        if (!(taskOrders.stream().anyMatch(o -> StringUtils.equals(o.tradeNo, order.tradeNo)))) {
-            orders.add(order);
-            if (order.taskId == currentSelectTask.id) {
-                NotifyAllObservers();
-            }
+//        ArrayList<ApsvOrder> taskOrders = orders.stream().filter(o -> o.taskId == order.taskId).collect(Collectors.toCollection(ArrayList::new));
+        orders.removeIf(o -> StringUtils.equals(o.tradeNo, order.tradeNo) && o.taskId == order.taskId);
+        orders.add(order);
+        if (order.taskId == currentSelectTask.id) {
+            NotifyAllObservers();
         }
     }
 
@@ -98,19 +101,27 @@ public class RunTasksModel implements ObservableSubject {
      * 开始当前任务
      */
     public void StartTask() {
-        // TODO 抓取任务
-
         this.taskListModel.MarkTaskStatus(currentSelectTask.id, TaskStatus.RUNNING);
         NotifyAllObservers();
+
+        // 开始抓取定时任务
+        Timer timer = new Timer();
+        timer.schedule(new ApsvTimerTask(currentSelectTask), 2000, Math.max(Settings.getInstance().getGrapInterval() * 1000, 30000));
+        PushManager.AddTimer(timer, currentSelectTask.id);
     }
 
     /**
      *
      */
     public void StopTask() {
-        // TODO 停止抓取
-
         this.taskListModel.MarkTaskStatus(currentSelectTask.id, TaskStatus.STOPPED);
         NotifyAllObservers();
+
+        // 停止定时抓取任务
+        Timer timer = PushManager.GetTimer(currentSelectTask.id);
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
     }
 }
