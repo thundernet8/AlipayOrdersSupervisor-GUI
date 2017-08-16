@@ -3,6 +3,7 @@ package com.wxq.apsv.utils;
 import com.wxq.apsv.model.Constants;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -97,6 +98,7 @@ public final class HttpRequest {
         }
 
         try {
+            request.setEntity(new UrlEncodedFormEntity(urlParameters, "UTF-8"));
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             logger.info("Response Code : {}", code);

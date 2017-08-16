@@ -1,11 +1,9 @@
 package com.wxq.apsv.worker;
 
-import com.wxq.apsv.model.ApsvOrder;
-import com.wxq.apsv.model.ApsvTask;
-import com.wxq.apsv.model.Constants;
-import com.wxq.apsv.model.RunTasksModel;
+import com.wxq.apsv.model.*;
 import com.wxq.apsv.utils.HttpRequest;
 import com.wxq.apsv.utils.Order;
+import com.wxq.apsv.utils.Settings;
 import org.apache.commons.lang.StringUtils;
 
 import org.jsoup.nodes.Document;
@@ -35,7 +33,6 @@ public class ApsvTimerTask extends TimerTask {
             return;
         }
         ArrayList<ApsvOrder> orders = pushOrders(findOrders(getPage()));
-        // ArrayList<ApsvOrder> orders = pushOrders(null);
 
         RunTasksModel runTasksModel = RunTasksModel.getInstance();
         orders.forEach(o -> {
@@ -61,17 +58,10 @@ public class ApsvTimerTask extends TimerTask {
 
     private ArrayList<ApsvOrder> findOrders(String html) {
         logger.info("Html: {}", html);
-        //File input = new File("/Users/WXQ/Desktop/orders.html");
         ArrayList<ApsvOrder> orders = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
-        // test start
-//        try {
-//            doc = Jsoup.parse(input, "UTF-8", "");
-//        } catch (IOException e) {
-//
-//        }
-        // -- test end
+
         Element ordersForm = doc.getElementById("J-submit-form");
         if (ordersForm == null) {
             logger.error("Cannot find order list form, maybe cookie expires");
@@ -87,7 +77,7 @@ public class ApsvTimerTask extends TimerTask {
             ApsvOrder order = new ApsvOrder(){
                 {
                     taskId = task.id;
-                    datetime = timeNodes.get(0).text() + " " + timeNodes.get(timeNodes.size() - 1).text();
+                    time = timeNodes.get(0).text() + " " + timeNodes.get(timeNodes.size() - 1).text();
                     description = row.select(".memo-info").text();
                     memo = row.select("td.memo p").text();
                     tradeNo = orderNoData.length > 1 ? orderNoData[1].split(":")[1] : orderNoData[0].split(":")[1];
@@ -103,8 +93,35 @@ public class ApsvTimerTask extends TimerTask {
     }
 
     private ArrayList<ApsvOrder> pushOrders(ArrayList<ApsvOrder> orders) {
-        // TODO
-        String s = HttpRequest.DoPost("https://webapproach.net/site/apsvnotify", "", new HashMap<String, Object>());
-        return orders;
+        ArrayList<ApsvOrder> newOrders = new ArrayList<>();
+        orders.forEach(o -> {
+            // 查询是否之前已经推送成功了
+            if (PushData.IsTradeNoHandled(task.id, o.tradeNo)) {
+                o.pushed = true;
+                newOrders.add(o);
+            } else {
+                // 需要推送
+                HashMap data = new HashMap<String, Object>();
+                data.put("tradeNo", o.tradeNo);
+                data.put("time", o.time);
+                data.put("description", o.description);
+                data.put("memo", o.memo);
+                data.put("username", o.username);
+                data.put("amount", o.amount);
+                data.put("status", o.status);
+                data.put("sig", o.sig);
+                data.put("version", o.version);
+                String code = HttpRequest.DoPost(task.pushApi, "", data);
+                logger.info("Push order {} with response body {}", o.tradeNo, code);
+                if (code == Settings.getInstance().getPushSuccessBody()) {
+                    o.pushed = true;
+                } else {
+                    o.pushed = false;
+                }
+                newOrders.add(o);
+            }
+        });
+
+        return newOrders;
     }
 }

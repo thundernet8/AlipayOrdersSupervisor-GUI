@@ -29,7 +29,10 @@ public class Settings {
     // 抓取订单时间间隔(s)
     private int grapInterval = 60;
 
-    public static Settings getInstance(){
+    // 推送订单成功的响应body
+    private String pushSuccessBody = "success";
+
+    synchronized public static Settings getInstance(){
         return instance;
     }
 
@@ -122,6 +125,14 @@ public class Settings {
 
     public void setGrapInterval(int interval) {
         props.setProperty("settings.task.interval", Integer.toString(interval));
+    }
+
+    public String getPushSuccessBody() {
+        return props.getProperty("settings.task.push.successcode", "success");
+    }
+
+    public void setPushSuccessBody(String code) {
+        props.setProperty("settings.task.push.successcode", code);
     }
 
     public String getTasks() {

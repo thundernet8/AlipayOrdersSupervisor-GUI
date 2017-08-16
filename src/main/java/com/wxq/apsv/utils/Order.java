@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 
 public final class Order {
     public static String Sign(ApsvOrder order, String secret) {
-        String[] data = new String[]{order.datetime, order.tradeNo, Float.toString(order.amount), order.status, secret};
+        String[] data = new String[]{order.time, order.tradeNo, Float.toString(order.amount), order.status, secret};
         String dataStr = String.join("|", data);
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");

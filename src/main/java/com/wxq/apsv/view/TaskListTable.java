@@ -13,20 +13,6 @@ import javax.swing.table.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-final class ApsvTaskStatus {
-    public static final String toString(TaskStatus status) {
-        switch (status) {
-            case STOPPED:
-                return "未运行";
-            case RUNNING:
-                return "运行中";
-            case INERROR:
-                return "异常";
-        }
-        return "";
-    }
-}
-
 public final class TaskListTable extends JTable implements Observer {
     private static final Logger logger = LoggerFactory.getLogger(TaskListTable.class);
 

@@ -5,7 +5,7 @@ public class ApsvOrder {
 
     public String tradeNo;
 
-    public String datetime;
+    public String time;
 
     public String description;
 
@@ -22,4 +22,7 @@ public class ApsvOrder {
 
     // md5一些关键信息的hash值，提供给服务端校验
     public String sig;
+
+    // 标记应用API数据版本以便服务端对应处理
+    public String version = "1.0";
 }

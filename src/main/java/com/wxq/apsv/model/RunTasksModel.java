@@ -108,6 +108,7 @@ public class RunTasksModel implements ObservableSubject {
         Timer timer = new Timer();
         timer.schedule(new ApsvTimerTask(currentSelectTask), 2000, Math.max(Settings.getInstance().getGrapInterval() * 1000, 30000));
         ApsvTimerManager.AddTimer(timer, currentSelectTask.id);
+        ApsvTimerManager.RecordStartTime(currentSelectTask.id);
     }
 
     /**
@@ -123,5 +124,6 @@ public class RunTasksModel implements ObservableSubject {
             timer.cancel();
             timer.purge();
         }
+        ApsvTimerManager.ClearStartTime(currentSelectTask.id);
     }
 }
