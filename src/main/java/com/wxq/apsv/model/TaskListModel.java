@@ -65,7 +65,12 @@ public class TaskListModel implements ObservableSubject {
      * @return
      */
     public String ValidateAdding(ApsvTask task) {
-        if (tasks.stream().anyMatch(t -> StringUtils.equals(t.name, task.name))) {
+        // 编辑任务的情况
+        if (task.id > 0 && tasks.stream().anyMatch(t -> StringUtils.equals(t.name, task.name) && t.id != task.id)) {
+            return "任务名不能重复";
+        }
+        // 新增任务的情况
+        if (task.id == 0 && tasks.stream().anyMatch(t -> StringUtils.equals(t.name, task.name))) {
             return "任务名不能重复";
         }
         return "";
