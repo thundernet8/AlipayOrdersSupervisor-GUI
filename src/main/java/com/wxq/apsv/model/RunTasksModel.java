@@ -98,7 +98,7 @@ public class RunTasksModel implements ObservableSubject {
     }
 
     /**
-     * 开始当前任务
+     * 开始当前任务(只会由button UI触发, 肯定为当前选中task)
      */
     public void StartTask() {
         this.taskListModel.MarkTaskStatus(currentSelectTask.id, TaskStatus.RUNNING);
@@ -112,7 +112,7 @@ public class RunTasksModel implements ObservableSubject {
     }
 
     /**
-     * 停止当前任务
+     * 停止当前任务(只会由button UI触发, 肯定为当前选中task)
      */
     public void StopTask() {
         this.taskListModel.MarkTaskStatus(currentSelectTask.id, TaskStatus.STOPPED);
@@ -125,5 +125,12 @@ public class RunTasksModel implements ObservableSubject {
             timer.purge();
         }
         ApsvTimerManager.ClearStartTime(currentSelectTask.id);
+    }
+
+    /**
+     * 标记任务异常(由抓取任务线程触发, 不一定为当前选中task)
+     */
+    public void MarkTaskException(int taskId) {
+        this.taskListModel.MarkTaskStatus(taskId, TaskStatus.INERROR);
     }
 }

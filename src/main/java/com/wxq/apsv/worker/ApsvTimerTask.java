@@ -65,6 +65,8 @@ public class ApsvTimerTask extends TimerTask {
         Element ordersForm = doc.getElementById("J-submit-form");
         if (ordersForm == null) {
             logger.error("Cannot find order list form, maybe cookie expires");
+            // 标记task status为异常
+            RunTasksModel.getInstance().MarkTaskException(task.id);
             return orders;
         }
 

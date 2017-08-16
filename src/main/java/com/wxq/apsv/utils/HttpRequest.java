@@ -9,7 +9,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.NameValuePair;
 
 import org.apache.http.impl.client.HttpClients;
@@ -64,7 +63,7 @@ public final class HttpRequest {
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             logger.info("Response Code : {}", code);
-            if (code != 200) {
+            if (code != 200 && code != 201) {
                 return "";
             }
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "GB18030"));
@@ -73,8 +72,6 @@ public final class HttpRequest {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
-
-            // String r1 = new String(result.toString().getBytes("GB18030"),"UTF-8");
 
             return result.toString();
         } catch (IOException e) {
@@ -102,7 +99,7 @@ public final class HttpRequest {
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             logger.info("Response Code : {}", code);
-            if (code != 200) {
+            if (code != 200 && code != 201) {
                 return "";
             }
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
