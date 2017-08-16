@@ -36,7 +36,7 @@ public class TaskDetailPane extends JPanel implements Observer {
     private java.util.Timer elapseTimeTimer;
 
     @Override
-    public void Update(ObservableSubject s) {
+    synchronized public void Update(ObservableSubject s) {
         ArrayList<ApsvTask> tasks = new ArrayList<>();
         if (s instanceof TaskListModel) {
             TaskListModel model = (TaskListModel)s;
@@ -53,9 +53,11 @@ public class TaskDetailPane extends JPanel implements Observer {
 
         ArrayList<String> options = tasks.stream().map(t -> t.name).collect(Collectors.toCollection(ArrayList::new));
 
-        UpdateSelector(options);
-        UpdateNums();
-        UpdateElapseTime();
+        SwingUtilities.invokeLater(() -> {
+            UpdateSelector(options);
+            UpdateNums();
+            UpdateElapseTime();
+        });
     }
 
     private void UpdateSelector(ArrayList<String> options) {

@@ -4,6 +4,7 @@ import com.wxq.apsv.model.*;
 import com.wxq.apsv.utils.HttpRequest;
 import com.wxq.apsv.utils.Order;
 import com.wxq.apsv.utils.Settings;
+import com.wxq.apsv.utils.Unicode;
 import org.apache.commons.lang.StringUtils;
 
 import org.jsoup.nodes.Document;
@@ -32,11 +33,18 @@ public class ApsvTimerTask extends TimerTask {
         if (task == null || StringUtils.isEmpty(task.cookie)) {
             return;
         }
-        ArrayList<ApsvOrder> orders = pushOrders(findOrders(getPage()));
 
         RunTasksModel runTasksModel = RunTasksModel.getInstance();
+        // 先从html分析订单(较快)
+        ArrayList<ApsvOrder> orders = findOrders(getPage());
         orders.forEach(o -> {
-            logger.info("Add order with tradeNo: {}", o.tradeNo);
+            logger.info("Add order(has not push) with tradeNo: {}", o.tradeNo);
+            runTasksModel.AddOrder(o);
+        });
+
+        orders = pushOrders(orders);
+        orders.forEach(o -> {
+            logger.info("Add order(pushed yet) with tradeNo: {}", o.tradeNo);
             runTasksModel.AddOrder(o);
         });
     }
@@ -57,7 +65,7 @@ public class ApsvTimerTask extends TimerTask {
     }
 
     private ArrayList<ApsvOrder> findOrders(String html) {
-        logger.info("Html: {}", html);
+        //logger.info("Html: {}", html);
         ArrayList<ApsvOrder> orders = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
@@ -83,7 +91,7 @@ public class ApsvTimerTask extends TimerTask {
                     description = row.select(".memo-info").text();
                     memo = row.select("td.memo p").text();
                     tradeNo = orderNoData.length > 1 ? orderNoData[1].split(":")[1] : orderNoData[0].split(":")[1];
-                    username = row.select("td.other p").text();
+                    username = Unicode.unicodeToString(row.select("td.other p").text());
                     amount = Float.parseFloat(row.select("td.amount span").text().replaceAll("\\s+", ""));
                     status = row.select("td.status p").text();
                 }

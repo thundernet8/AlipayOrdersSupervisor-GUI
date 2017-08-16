@@ -1,8 +1,10 @@
 package com.wxq.apsv.utils;
 
 import com.wxq.apsv.model.Constants;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -19,11 +21,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+
+// 一些注意事项 http://blog.csdn.net/shootyou/article/details/6615051
 
 public final class HttpRequest {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
@@ -56,17 +61,26 @@ public final class HttpRequest {
         // TODO add timeout
         logger.info("DoGet with url: {}, cookie: {}", url, cookie);
         HttpGet request = new HttpGet(url);
+        request.setConfig(RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000).setConnectionRequestTimeout(10000).build());
         request.addHeader("User-Agent", Constants.DEFAULT_USER_AGENT);
         request.addHeader("Cookie", cookie);
 
+        InputStream in = null;
+        InputStreamReader isr = null;
         try {
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             logger.info("Response Code : {}", code);
             if (code != 200 && code != 201) {
+                request.abort();
                 return "";
             }
-            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "GB18030"));
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                in = entity.getContent();
+                isr = new InputStreamReader(in, "GB18030");
+            }
+            BufferedReader rd = new BufferedReader(isr);
             StringBuffer result = new StringBuffer();
             String line;
             while ((line = rd.readLine()) != null) {
@@ -75,7 +89,23 @@ public final class HttpRequest {
 
             return result.toString();
         } catch (IOException e) {
+            request.abort();
             logger.error(e.toString());
+        } finally {
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (IOException e) {
+
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+
+                }
+            }
         }
 
         return "";
@@ -84,6 +114,7 @@ public final class HttpRequest {
     public static String DoPost(String url, String cookie, HashMap<String, Object> data) {
         logger.info("DoPost with url: {}, cookie: {}, data: {}", url, cookie, data.toString());
         HttpPost request = new HttpPost(url);
+        request.setConfig(RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000).setConnectionRequestTimeout(10000).build());
         request.addHeader("User-Agent", Constants.DEFAULT_USER_AGENT);
         request.addHeader("Cookie", cookie);
 
@@ -94,15 +125,24 @@ public final class HttpRequest {
             urlParameters.add(new BasicNameValuePair(entry.getKey().toString(), entry.getValue().toString()));
         }
 
+        InputStream in = null;
+        InputStreamReader isr = null;
+
         try {
             request.setEntity(new UrlEncodedFormEntity(urlParameters, "UTF-8"));
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             logger.info("Response Code : {}", code);
             if (code != 200 && code != 201) {
+                request.abort();
                 return "";
             }
-            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                in = entity.getContent();
+                isr = new InputStreamReader(in, "UTF-8");
+            }
+            BufferedReader rd = new BufferedReader(isr);
             StringBuffer result = new StringBuffer();
             String line;
             while ((line = rd.readLine()) != null) {
@@ -110,7 +150,23 @@ public final class HttpRequest {
             }
             return result.toString();
         } catch (IOException e) {
+            request.abort();
             logger.error(e.toString());
+        } finally {
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (IOException e) {
+
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+
+                }
+            }
         }
 
         return "";

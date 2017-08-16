@@ -73,7 +73,7 @@ public class TaskDetailController extends JPanel implements TabController {
         });
 
         // 注册Observer
-        runTasksModel.RegisterObserver(this.orderListTable);
+        runTasksModel.RegisterObserver(orderListTable);
     }
 
     private void InitListeners() {

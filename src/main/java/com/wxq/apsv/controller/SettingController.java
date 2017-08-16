@@ -182,7 +182,7 @@ public class SettingController extends JPanel implements TabController {
         successTextRow.add(pushSuccessTextField, new GridConstraints(0, 1, 1, 1, 0, 1, 0, 0, new Dimension(160, -1), null, null, 0, false));
         confirmSuccessTextInputBtn = new JButton("确定");
         successTextRow.add(confirmSuccessTextInputBtn, new GridConstraints(0, 2, 1, 1, 0, 1, 0, 0, new Dimension(50, -1), null, null, 0, false));
-        successTextRow.add(new JLabel("注意：由接收推送的服务器响应文本决定"), new GridConstraints(0, 11, 1, 1, 0, 1, 1|2, 0, null, null, null, 0, false));
+        successTextRow.add(new JLabel("注：由接收推送的服务器响应文本决定, 用来判断该次推送是否已被服务器成功处理"), new GridConstraints(0, 11, 1, 1, 0, 1, 1|2, 0, null, null, null, 0, false));
 
         // space row
         JPanel spaceRow2 = new JPanel();
@@ -244,6 +244,7 @@ public class SettingController extends JPanel implements TabController {
         }
 
         confirmSuccessTextInputBtn.addActionListener(e -> {
+            Toolkit.getDefaultToolkit().beep();
             String input = pushSuccessTextField.getText();
             if (StringUtils.isEmpty(input)) {
                 JOptionPane.showMessageDialog(Frame.getFrames()[0], "该文本不能为空", "错误", JOptionPane.ERROR_MESSAGE);

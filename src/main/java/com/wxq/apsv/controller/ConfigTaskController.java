@@ -67,6 +67,8 @@ public class ConfigTaskController extends JPanel implements TabController {
     }
 
     private void InitAddForm() {
+        alipayCookieField.setLineWrap(true);
+
         Map<String, JComponent> fieldsMap = new HashMap<String, JComponent>(){
             {
                 put("1.任务名称", taskNameField);

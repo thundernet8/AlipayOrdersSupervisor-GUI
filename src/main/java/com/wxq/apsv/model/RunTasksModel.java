@@ -101,6 +101,9 @@ public class RunTasksModel implements ObservableSubject {
      * 开始当前任务(只会由button UI触发, 肯定为当前选中task)
      */
     public void StartTask() {
+        // 清理当前任务下已抓取的orders
+        orders.removeIf(o -> o.taskId == currentSelectTask.id);
+
         this.taskListModel.MarkTaskStatus(currentSelectTask.id, TaskStatus.RUNNING);
         NotifyAllObservers();
 

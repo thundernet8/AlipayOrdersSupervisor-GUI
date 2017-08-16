@@ -50,7 +50,7 @@ public final class OrderListTable extends JTable implements Observer {
     }
 
     @Override
-    public void Update(ObservableSubject s) {
+    synchronized public void Update(ObservableSubject s) {
         if (s instanceof RunTasksModel) {
             ArrayList<ApsvOrder> orders = ((RunTasksModel)s).getOrders();
             Object[][] cellData = new String[orders.size()][columns.length];
@@ -63,29 +63,32 @@ public final class OrderListTable extends JTable implements Observer {
             TableModel tableModel = new DefaultTableModel(cellData, columns);
             this.setModel(tableModel);
 
-            this.UpdateOthers();
+            // https://stackoverflow.com/questions/7229284/refreshing-gui-by-another-thread-in-java-swing#answer-7237224
+            SwingUtilities.invokeLater(this::UpdateOthers);
         }
     }
 
-    public void UpdateOthers() {
+    private void UpdateOthers() {
+        // notes https://stackoverflow.com/questions/8355445/java-swing-jtable-arrayindexoutofboundsexception#answer-8355554
+//        logger.info("current thread: " + (Long.toString(Thread.currentThread().getId())));
+//        logger.info("In event dispatch thread? :" + SwingUtilities.isEventDispatchThread());
         TableColumnModel columnModel = this.getColumnModel();
         // 行高列宽
         this.setRowHeight(40);
-        columnModel.getColumn(0).setPreferredWidth(150);
-        columnModel.getColumn(0).setMaxWidth(150);
+        columnModel.getColumn(0).setPreferredWidth(175);
+        columnModel.getColumn(0).setMaxWidth(175);
         columnModel.getColumn(1).setPreferredWidth(120);
-        columnModel.getColumn(1).setMaxWidth(120);
 //        columnModel.getColumn(2).setPreferredWidth(200);
 //        columnModel.getColumn(2).setMaxWidth(200);
         columnModel.getColumn(3).setPreferredWidth(100);
         columnModel.getColumn(3).setMaxWidth(100);
-        columnModel.getColumn(4).setPreferredWidth(100);
-        columnModel.getColumn(4).setMaxWidth(100);
-        columnModel.getColumn(5).setPreferredWidth(120);
-        columnModel.getColumn(5).setMinWidth(120);
-        columnModel.getColumn(5).setMaxWidth(120);
-        columnModel.getColumn(6).setPreferredWidth(150);
-        columnModel.getColumn(6).setMinWidth(150);
+        columnModel.getColumn(4).setPreferredWidth(60);
+        columnModel.getColumn(4).setMaxWidth(60);
+        columnModel.getColumn(5).setPreferredWidth(90);
+        columnModel.getColumn(5).setMinWidth(90);
+        columnModel.getColumn(5).setMaxWidth(90);
+        columnModel.getColumn(7).setPreferredWidth(120);
+        columnModel.getColumn(7).setMinWidth(120);
 
         // Actions columns
         new OrderActionsColumn(this, columns.length - 1, (ActionEvent e, int row, int column, OrderAction action) -> {
