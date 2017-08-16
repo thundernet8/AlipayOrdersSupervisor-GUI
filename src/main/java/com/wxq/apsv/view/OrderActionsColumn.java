@@ -2,6 +2,8 @@ package com.wxq.apsv.view;
 
 import com.wxq.apsv.enums.OrderAction;
 import com.wxq.apsv.interfaces.OrderColumnActionListener;
+import com.wxq.apsv.model.ApsvOrder;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -36,8 +38,10 @@ public class OrderActionsColumn extends AbstractCellEditor implements
         columnModel.getColumn(column).setCellEditor(this);
     }
 
-    public JComponent getTableCellRendererComponent(JTable table, Object value,
-                                                    boolean isSelected, boolean hasFocus, int row, int column) {
+    public JComponent getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        if (StringUtils.equals(value.toString(), "1")) {
+            return null;
+        }
         if (hasFocus) {
             renderButton1.setForeground(table.getForeground());
             renderButton1.setBackground(UIManager.getColor("Button.background"));
@@ -54,8 +58,10 @@ public class OrderActionsColumn extends AbstractCellEditor implements
         return renderPanel;
     }
 
-    public JComponent getTableCellEditorComponent(JTable table, Object value,
-                                                  boolean isSelected, int row, int column) {
+    public JComponent getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        if (StringUtils.equals(value.toString(), "1")) {
+            return null;
+        }
         editButton1.setText("重新推送");
         editButton1.setIcon(new ImageIcon(getClass().getResource("/images/icons/push.png")));
         return editPanel;

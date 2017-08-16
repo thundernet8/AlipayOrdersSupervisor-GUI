@@ -57,7 +57,7 @@ public final class OrderListTable extends JTable implements Observer {
 
             for (int i=0; i<orders.size(); i++) {
                 ApsvOrder order = orders.get(i);
-                cellData[i] = new String[]{order.tradeNo, order.time, order.memo, order.username, Float.toString(order.amount), order.status, order.pushed ? "推送成功" : "未推送成功", ""};
+                cellData[i] = new String[]{order.tradeNo, order.time, order.memo, order.username, Float.toString(order.amount), order.status, order.pushed ? "推送成功" : "未推送成功", order.pushed ? "1" : "0"};
             }
 
             TableModel tableModel = new DefaultTableModel(cellData, columns);

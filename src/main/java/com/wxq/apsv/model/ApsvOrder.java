@@ -1,6 +1,6 @@
 package com.wxq.apsv.model;
 
-public class ApsvOrder {
+public final class ApsvOrder {
     public int taskId;
 
     public String tradeNo;
@@ -24,5 +24,5 @@ public class ApsvOrder {
     public String sig;
 
     // 标记应用API数据版本以便服务端对应处理
-    public String version = "1.0";
+    public String version = "gui_" + Constants.APP_VERSION;
 }

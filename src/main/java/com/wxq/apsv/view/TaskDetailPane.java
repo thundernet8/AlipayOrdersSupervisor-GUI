@@ -157,7 +157,7 @@ public class TaskDetailPane extends JPanel implements Observer {
 
         // Elapse time label (Column 10)
         elapseTimeLabel = new JLabel();
-        elapseTimeLabel.setFont(new Font("", Font.PLAIN, 32));
+        elapseTimeLabel.setFont(new Font("", Font.PLAIN, 24));
         topWrapperPanel.add(elapseTimeLabel, new GridConstraints(0, 9, 2, 1, 8, 0, 0, 0, null, null, null, 0, false));
 
         // 右端弹性空间 (Column 12)
