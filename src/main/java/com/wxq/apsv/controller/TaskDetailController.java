@@ -10,6 +10,7 @@ import com.wxq.apsv.model.TaskListModel;
 import com.wxq.apsv.view.OrderListTable;
 import com.wxq.apsv.view.OrderActionsColumn;
 import com.wxq.apsv.view.TaskDetailPane;
+import com.wxq.apsv.worker.ApsvRepushTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +99,8 @@ public class TaskDetailController extends JPanel implements TabController {
                 return;
             }
             if (action == OrderAction.REPUSH) {
-                // TODO repush
+                // repush
+                new java.util.Timer().schedule(new ApsvRepushTask(runTasksModel.getCurrentSelectTask(), runTasksModel.getOrders().get(row)), 1000);
             }
         });
     }

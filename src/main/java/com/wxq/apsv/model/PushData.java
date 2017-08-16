@@ -20,7 +20,7 @@ public final class PushData {
         successOrderPushMap.put(Integer.toString(taskId), taskTradeNos);
     }
 
-    public static boolean IsTradeNoHandled(int taskId, String tradeNo) {
+    public static boolean IsTradeNumHandled(int taskId, String tradeNo) {
         Set<String> taskTradeNos = successOrderPushMap.get(Integer.toString(taskId));
         if (taskTradeNos == null) {
             return false;

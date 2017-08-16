@@ -96,7 +96,7 @@ public class ApsvTimerTask extends TimerTask {
         ArrayList<ApsvOrder> newOrders = new ArrayList<>();
         orders.forEach(o -> {
             // 查询是否之前已经推送成功了
-            if (PushData.IsTradeNoHandled(task.id, o.tradeNo)) {
+            if (PushData.IsTradeNumHandled(task.id, o.tradeNo)) {
                 o.pushed = true;
                 newOrders.add(o);
             } else {
@@ -113,8 +113,10 @@ public class ApsvTimerTask extends TimerTask {
                 data.put("version", o.version);
                 String code = HttpRequest.DoPost(task.pushApi, "", data);
                 logger.info("Push order {} with response body {}", o.tradeNo, code);
-                if (code == Settings.getInstance().getPushSuccessBody()) {
+                if (StringUtils.equals(code, Settings.getInstance().getPushSuccessBody())) {
                     o.pushed = true;
+                    // 保存到已推送成功列表
+                    PushData.AddSuccessRecord(o.taskId, o.tradeNo);
                 } else {
                     o.pushed = false;
                 }

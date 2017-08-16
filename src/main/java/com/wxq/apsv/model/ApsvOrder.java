@@ -1,6 +1,6 @@
 package com.wxq.apsv.model;
 
-public final class ApsvOrder {
+public class ApsvOrder {
     public int taskId;
 
     public String tradeNo;
