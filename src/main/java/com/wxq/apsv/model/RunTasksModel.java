@@ -11,6 +11,9 @@ import com.wxq.apsv.worker.ApsvTimerTask;
 import com.wxq.apsv.worker.ApsvTimerManager;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * 任务运行主要数据的模型
+ */
 public class RunTasksModel implements ObservableSubject {
     private static RunTasksModel instance;
 
@@ -58,7 +61,6 @@ public class RunTasksModel implements ObservableSubject {
         }
     }
 
-    //
     public void SelectTask(String name) {
         ApsvTask task = this.taskListModel.getTasks().stream().filter(t -> StringUtils.equals(t.name, name)).findFirst().get();
         if (currentSelectTask == null || task.id != currentSelectTask.id) {
@@ -81,7 +83,6 @@ public class RunTasksModel implements ObservableSubject {
     }
 
     synchronized public void AddOrder(ApsvOrder order) {
-//        ArrayList<ApsvOrder> taskOrders = orders.stream().filter(o -> o.taskId == order.taskId).collect(Collectors.toCollection(ArrayList::new));
         orders.removeIf(o -> StringUtils.equals(o.tradeNo, order.tradeNo) && o.taskId == order.taskId);
         orders.add(order);
         if (order.taskId == currentSelectTask.id) {

@@ -31,6 +31,11 @@ public final class ApsvTimerManager {
         startTimeMap.remove(Integer.toString(taskId));
     }
 
+    /**
+     * 计算任务的运行时间并格式化为友好的字符串
+     * @param taskId int
+     * @return String
+     */
     public static String GetElapseTime(int taskId) {
         Date date = startTimeMap.get(Integer.toString(taskId));
         if (date == null) {

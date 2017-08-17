@@ -22,9 +22,6 @@ public final class PushData {
 
     public static boolean IsTradeNumHandled(int taskId, String tradeNo) {
         Set<String> taskTradeNos = successOrderPushMap.get(Integer.toString(taskId));
-        if (taskTradeNos == null) {
-            return false;
-        }
-        return taskTradeNos.contains(tradeNo);
+        return taskTradeNos != null && taskTradeNos.contains(tradeNo);
     }
 }

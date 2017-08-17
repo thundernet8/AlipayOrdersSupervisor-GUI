@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.NameValuePair;
 
 import org.apache.http.impl.client.HttpClients;
@@ -30,35 +29,37 @@ import java.util.*;
 
 // 一些注意事项 http://blog.csdn.net/shootyou/article/details/6615051
 
+/**
+ * 利用Apache HttpClient 进行GET/POST请求的封装
+ */
 public final class HttpRequest {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
-    private static HttpClient client = GetClient(); // HttpClientBuilder.create().build();
+    private static HttpClient client = GetClient();
 
     private static HttpClient GetClient() {
         if (client != null) {
             return client;
         }
         try {
+            // 解决自定义SSL证书以及不受信CA证书链的异常问题(即忽略证书校验)
             SSLContextBuilder builder = new SSLContextBuilder();
             builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                     builder.build());
-            CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
+            return HttpClients.custom().setSSLSocketFactory(
                     sslsf).build();
-            return httpclient;
         } catch (NoSuchAlgorithmException e) {
-
+            logger.error(e.toString());
         } catch (KeyStoreException e) {
-
+            logger.error(e.toString());
         } catch (KeyManagementException e) {
-
+            logger.error(e.toString());
         }
         return null;
     }
 
     public static String DoGet(String url, String cookie) {
-        // TODO add timeout
         logger.info("DoGet with url: {}, cookie: {}", url, cookie);
         HttpGet request = new HttpGet(url);
         request.setConfig(RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000).setConnectionRequestTimeout(10000).build());
@@ -96,14 +97,14 @@ public final class HttpRequest {
                 try {
                     isr.close();
                 } catch (IOException e) {
-
+                    logger.error(e.toString());
                 }
             }
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-
+                    logger.error(e.toString());
                 }
             }
         }
@@ -157,14 +158,14 @@ public final class HttpRequest {
                 try {
                     isr.close();
                 } catch (IOException e) {
-
+                    logger.error(e.toString());
                 }
             }
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-
+                    logger.error(e.toString());
                 }
             }
         }

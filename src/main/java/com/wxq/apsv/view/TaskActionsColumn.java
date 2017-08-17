@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import com.wxq.apsv.interfaces.TaskColumnActionListener;
 import com.wxq.apsv.enums.TaskAction;
 
+/**
+ * 自定义任务表格Actions列的渲染
+ */
 public class TaskActionsColumn extends AbstractCellEditor implements
         TableCellRenderer, TableCellEditor {
     private JPanel renderPanel;

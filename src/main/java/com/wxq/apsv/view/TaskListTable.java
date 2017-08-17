@@ -13,6 +13,9 @@ import javax.swing.table.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * 任务列表表格
+ */
 public final class TaskListTable extends JTable implements Observer {
     private static final Logger logger = LoggerFactory.getLogger(TaskListTable.class);
 
@@ -71,8 +74,6 @@ public final class TaskListTable extends JTable implements Observer {
         columnModel.getColumn(0).setMaxWidth(60);
         columnModel.getColumn(1).setPreferredWidth(160);
         columnModel.getColumn(1).setMaxWidth(160);
-//        columnModel.getColumn(2).setPreferredWidth(200);
-//        columnModel.getColumn(2).setMaxWidth(200);
         columnModel.getColumn(3).setPreferredWidth(250);
         columnModel.getColumn(3).setMaxWidth(250);
         columnModel.getColumn(4).setPreferredWidth(120);

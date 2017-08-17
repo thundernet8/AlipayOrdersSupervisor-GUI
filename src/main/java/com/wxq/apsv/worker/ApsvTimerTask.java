@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
 
+/**
+ * 抓取分析订单以及推送服务器的定时循环任务
+ */
 public class ApsvTimerTask extends TimerTask {
     private static final Logger logger = LoggerFactory.getLogger(ApsvTimerTask.class);
 
@@ -35,13 +38,14 @@ public class ApsvTimerTask extends TimerTask {
         }
 
         RunTasksModel runTasksModel = RunTasksModel.getInstance();
-        // 先从html分析订单(较快)
+        // 先从html分析订单(较快)并显示到表格
         ArrayList<ApsvOrder> orders = findOrders(getPage());
         orders.forEach(o -> {
             logger.info("Add order(has not push) with tradeNo: {}", o.tradeNo);
             runTasksModel.AddOrder(o);
         });
 
+        // 推送订单并刷新表格
         orders = pushOrders(orders);
         orders.forEach(o -> {
             logger.info("Add order(pushed yet) with tradeNo: {}", o.tradeNo);
@@ -57,6 +61,7 @@ public class ApsvTimerTask extends TimerTask {
             return "";
         }
 
+        // 再请求高级版账单页面
         String orderListPage = HttpRequest.DoGet(Constants.ALIPAY_ADVANCED_ORDERS_URL, task.cookie);
         if (StringUtils.isEmpty(orderListPage)) {
             logger.error("Fetch {} failed", Constants.ALIPAY_ADVANCED_ORDERS_URL);
@@ -74,6 +79,7 @@ public class ApsvTimerTask extends TimerTask {
         if (ordersForm == null) {
             logger.error("Cannot find order list form, maybe cookie expires");
             // 标记task status为异常
+            // TODO 弹窗提醒cookie异常
             RunTasksModel.getInstance().MarkTaskException(task.id);
             return orders;
         }

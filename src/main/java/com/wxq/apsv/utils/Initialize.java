@@ -55,6 +55,9 @@ public class Initialize {
         }
     }
 
+    /**
+     * 初始化软件退出时执行的任务
+     */
     public static void InitShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("App is shutting down!");

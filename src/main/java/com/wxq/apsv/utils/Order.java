@@ -6,6 +6,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.charset.Charset;
 
+/**
+ * 根据指定secret生成订单数据的签名
+ */
 public final class Order {
     public static String Sign(ApsvOrder order, String secret) {
         String[] data = new String[]{order.time, order.tradeNo, Float.toString(order.amount), order.status, secret};

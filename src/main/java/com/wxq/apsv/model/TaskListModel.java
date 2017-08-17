@@ -1,17 +1,21 @@
 package com.wxq.apsv.model;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import com.wxq.apsv.enums.TaskStatus;
 import com.wxq.apsv.utils.Settings;
+import com.wxq.apsv.interfaces.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import com.wxq.apsv.interfaces.*;
-
+/**
+ * 任务列表的模型
+ */
 public class TaskListModel implements ObservableSubject {
     private static final Logger logger = LoggerFactory.getLogger(TaskListModel.class);
 
@@ -61,8 +65,8 @@ public class TaskListModel implements ObservableSubject {
 
     /**
      * 添加任务之前检查任务数据
-     * @param task
-     * @return
+     * @param task ApsvTask
+     * @return String
      */
     public String ValidateAdding(ApsvTask task) {
         // 编辑任务的情况
@@ -119,7 +123,11 @@ public class TaskListModel implements ObservableSubject {
     }
 
     public void MarkTaskStatus(int id, TaskStatus status) {
-        ApsvTask task = tasks.stream().filter(t -> t.id == id).findFirst().get();
+        Optional<ApsvTask> optional = tasks.stream().filter(t -> t.id == id).findFirst();
+        if (!optional.isPresent()) {
+            return;
+        }
+        ApsvTask task = optional.get();
         if (task.status != status) {
             task.status = status;
             NotifyAllObservers();

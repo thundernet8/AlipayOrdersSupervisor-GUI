@@ -17,6 +17,9 @@ import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
+/**
+ * 订单列表表格
+ */
 public final class OrderListTable extends JTable implements Observer {
     private static final Logger logger = LoggerFactory.getLogger(OrderListTable.class);
 
@@ -78,8 +81,6 @@ public final class OrderListTable extends JTable implements Observer {
         columnModel.getColumn(0).setPreferredWidth(175);
         columnModel.getColumn(0).setMaxWidth(175);
         columnModel.getColumn(1).setPreferredWidth(120);
-//        columnModel.getColumn(2).setPreferredWidth(200);
-//        columnModel.getColumn(2).setMaxWidth(200);
         columnModel.getColumn(3).setPreferredWidth(100);
         columnModel.getColumn(3).setMaxWidth(100);
         columnModel.getColumn(4).setPreferredWidth(60);

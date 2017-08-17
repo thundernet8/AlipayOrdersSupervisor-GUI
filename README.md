@@ -21,3 +21,7 @@ mvn install:install-file -Dfile=/Users/WXQ/Desktop/APSV-GUI/src/main/lib/darcula
 
 ### beautyeye
 mvn install:install-file -Dfile=/Users/WXQ/Desktop/APSV-GUI/src/main/lib/beautyeye_lnf.jar -DgroupId=com.beautyeye -DartifactId=beautyeye-lnf -Dpackaging=jar -Dversion=1.0 -DgeneratePom=true -DcreateChecksum=true
+
+## 使用注意
+
+jar包可自己编译生成，服务端请参考com.wxq.apsv.utils.Order生成签名的方法，对应验证数据合法性后进行业务处理

@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
+/**
+ * 任务选择,启停操作以及状态信息面板
+ */
 public class TaskDetailPane extends JPanel implements Observer {
     private RunTasksModel runTasksModel;
 
