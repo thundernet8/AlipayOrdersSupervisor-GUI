@@ -1,5 +1,8 @@
 package com.wxq.apsv.model;
 
+/**
+ * 订单模型
+ */
 public class ApsvOrder {
     public int taskId;
 

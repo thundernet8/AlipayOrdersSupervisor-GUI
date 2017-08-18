@@ -1,5 +1,6 @@
 package com.wxq.apsv.utils;
 
+import com.wxq.apsv.model.RunTasksModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
@@ -55,9 +56,16 @@ public class Initialize {
         }
     }
 
+    /**
+     * 初始化软件退出时执行的任务
+     */
     public static void InitShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("App is shutting down!");
+
+            logger.info("Stopping all task");
+            RunTasksModel.getInstance().StopAllTask();
+
             // TODO more dispose
             settings.Save();
         }));

@@ -2,7 +2,6 @@ package com.wxq.apsv.view;
 
 import com.wxq.apsv.enums.OrderAction;
 import com.wxq.apsv.interfaces.OrderColumnActionListener;
-import com.wxq.apsv.model.ApsvOrder;
 import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
@@ -11,6 +10,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
 
+/**
+ * 自定义订单表格Action列的渲染
+ */
 public class OrderActionsColumn extends AbstractCellEditor implements
         TableCellRenderer, TableCellEditor {
     private JPanel renderPanel;

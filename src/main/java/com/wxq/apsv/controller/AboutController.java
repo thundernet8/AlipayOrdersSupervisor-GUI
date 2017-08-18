@@ -58,7 +58,7 @@ public class AboutController extends JPanel implements TabController {
         copyrightLabel = new JLabel("<html>Copyright (c) 2017. " + "<a href=\"" + Constants.APP_AUTHOR_GITHUB + "\">" + Constants.APP_AUTHOR + "</a></html>");
         this.add(copyrightLabel, new GridConstraints(5, 0, 1, 6, 0, 0, 1|2, 0, null, null, new Dimension(-1, 30), 0, false));
 
-        versionLabel = new JLabel("Version " + Constants.APP_VERSION + "_b170809");
+        versionLabel = new JLabel("Version " + Constants.APP_VERSION + "_b170818");
         this.add(versionLabel, new GridConstraints(6, 0, 1, 6, 0, 0, 1|2, 0, null, null, new Dimension(-1, 30), 0, false));
 
         linkLabel = new JLabel("<html>GitHub: <a href='" + Constants.APP_REPO + "'>" + Constants.APP_REPO + "</a></html>");

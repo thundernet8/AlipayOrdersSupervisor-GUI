@@ -11,6 +11,9 @@ import java.util.Properties;
 
 import com.wxq.apsv.enums.*;
 
+/**
+ * 软件设置
+ */
 public class Settings {
     private static final Logger logger = LoggerFactory.getLogger(Settings.class);
 

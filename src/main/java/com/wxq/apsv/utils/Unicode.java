@@ -4,6 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Unicode {
+    /**
+     * 将支付宝订单用户名包含Unicode编码转换为中文
+     * @param str String
+     * @return String
+     */
     public static String unicodeToString(String str) {
         Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
         Matcher matcher = pattern.matcher(str);

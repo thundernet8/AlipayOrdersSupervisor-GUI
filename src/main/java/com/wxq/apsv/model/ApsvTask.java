@@ -2,6 +2,9 @@ package com.wxq.apsv.model;
 
 import com.wxq.apsv.enums.TaskStatus;
 
+/**
+ * 任务模型
+ */
 public class ApsvTask {
     public int id;
 
@@ -21,8 +24,4 @@ public class ApsvTask {
 
     // 任务执行状态
     public TaskStatus status = TaskStatus.STOPPED;
-
-    public ApsvTask() {
-
-    }
 }

@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.TimerTask;
 
+/**
+ * 手工点击订单列表记录的重新推送按钮触发的一次性推送任务
+ */
 public class ApsvRepushTask extends TimerTask {
     private static final Logger logger = LoggerFactory.getLogger(ApsvTimerTask.class);
 
