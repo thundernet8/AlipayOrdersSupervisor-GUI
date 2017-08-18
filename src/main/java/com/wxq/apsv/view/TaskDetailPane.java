@@ -46,7 +46,10 @@ public class TaskDetailPane extends JPanel implements Observer {
             tasks = model.getTasks();
         } else if (s instanceof  RunTasksModel) {
             RunTasksModel model = (RunTasksModel)s;
-            if (model.getCurrentSelectTask().status == TaskStatus.STOPPED) {
+            ApsvTask currentTask = model.getCurrentSelectTask();
+            if (currentTask == null) {
+                runBtn.setVisible(false);
+            } else if (currentTask.status == TaskStatus.STOPPED) {
                 runBtn.setText("启动");
             } else {
                 runBtn.setText("停止");

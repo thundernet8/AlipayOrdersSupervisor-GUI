@@ -1,6 +1,7 @@
 package com.wxq.apsv.model;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,11 @@ public class RunTasksModel implements ObservableSubject {
     }
 
     public void SelectTask(String name) {
-        ApsvTask task = this.taskListModel.getTasks().stream().filter(t -> StringUtils.equals(t.name, name)).findFirst().get();
+        Optional<ApsvTask> optional = this.taskListModel.getTasks().stream().filter(t -> StringUtils.equals(t.name, name)).findFirst();
+        if (!optional.isPresent()) {
+            return;
+        }
+        ApsvTask task = optional.get();
         if (currentSelectTask == null || task.id != currentSelectTask.id) {
             this.currentSelectTask = task;
             NotifyAllObservers();
@@ -136,5 +141,23 @@ public class RunTasksModel implements ObservableSubject {
      */
     public void MarkTaskException(int taskId) {
         this.taskListModel.MarkTaskStatus(taskId, TaskStatus.INERROR);
+    }
+
+    /**
+     * 停止所有任务(在程序退出的hook中执行)
+     */
+    public void StopAllTask() {
+        ArrayList<ApsvTask> tasks = this.getTasks();
+        tasks.forEach(t -> {
+            if (t.status != TaskStatus.STOPPED) {
+                this.taskListModel.MarkTaskStatus(t.id, TaskStatus.STOPPED);
+                Timer timer = ApsvTimerManager.GetTimer(t.id);
+                if (timer != null) {
+                    timer.cancel();
+                    timer.purge();
+                }
+                ApsvTimerManager.ClearStartTime(t.id);
+            }
+        });
     }
 }
