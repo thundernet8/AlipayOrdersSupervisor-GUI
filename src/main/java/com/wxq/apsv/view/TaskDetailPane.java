@@ -51,8 +51,10 @@ public class TaskDetailPane extends JPanel implements Observer {
                 runBtn.setVisible(false);
             } else if (currentTask.status == TaskStatus.STOPPED) {
                 runBtn.setText("启动");
+                runBtn.setVisible(true);
             } else {
                 runBtn.setText("停止");
+                runBtn.setVisible(true);
             }
             tasks = runTasksModel.getTasks();
         }
