@@ -107,11 +107,18 @@ public class RunTasksModel implements ObservableSubject {
      * 开始当前任务(只会由button UI触发, 肯定为当前选中task)
      */
     public void StartTask() {
+        //获取最新的currentTask
+        Optional<ApsvTask> op = this.taskListModel.getTasks().stream().filter(t->t.id == currentSelectTask.id).findFirst();
+        if(!op.isPresent())
+            return;
+        currentSelectTask = op.get();
+
         // 清理当前任务下已抓取的orders
         orders.removeIf(o -> o.taskId == currentSelectTask.id);
 
         this.taskListModel.MarkTaskStatus(currentSelectTask.id, TaskStatus.RUNNING);
         NotifyAllObservers();
+
 
         // 开始抓取定时任务
         Timer timer = new Timer();
