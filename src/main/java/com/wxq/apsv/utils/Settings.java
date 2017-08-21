@@ -144,5 +144,6 @@ public class Settings {
 
     public void setTasks(String tasks) {
         props.setProperty("app.data.tasks", tasks);
+        this.Save();
     }
 }
