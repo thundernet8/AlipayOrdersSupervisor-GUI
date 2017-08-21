@@ -25,7 +25,7 @@ public class TaskListModel implements ObservableSubject {
 
     private ArrayList<ApsvTask> tasks;
 
-    private TaskListModel(){
+    private TaskListModel() {
         observers = new ArrayList<>();
         tasks = new ArrayList<>();
         String savedTasksString = Settings.getInstance().getTasks();
@@ -33,7 +33,8 @@ public class TaskListModel implements ObservableSubject {
             Gson gson = new Gson();
             ArrayList<String> tasksStrings = gson.fromJson(savedTasksString, ArrayList.class);
             tasksStrings.forEach(s -> {
-                tasks.add(gson.fromJson(s, new TypeToken<ApsvTask>(){}.getType()));
+                tasks.add(gson.fromJson(s, new TypeToken<ApsvTask>() {
+                }.getType()));
             });
         }
     }
@@ -58,13 +59,14 @@ public class TaskListModel implements ObservableSubject {
 
     @Override
     public void NotifyAllObservers() {
-        for (Observer o:observers) {
+        for (Observer o : observers) {
             o.Update(this);
         }
     }
 
     /**
      * 添加任务之前检查任务数据
+     *
      * @param task ApsvTask
      * @return String
      */
@@ -82,7 +84,15 @@ public class TaskListModel implements ObservableSubject {
 
     public void AddTask(ApsvTask task) {
         if (task.id > 0) {
-            this.tasks.removeIf(t -> t.id == task.id);
+            Optional<ApsvTask> op = tasks.stream().filter(t -> t.id == task.id).findFirst();
+            if (op.isPresent()) {
+                TaskStatus taskStatus = op.get().status;
+                if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.INERROR) {
+                    //TODO 弹框提示：不允许修改正在执行的任务，请先停止任务;
+                    return;
+                }
+                this.tasks.removeIf(t -> t.id == task.id);
+            }
         } else {
             task.id = this.tasks.size() + 1;
         }
@@ -111,9 +121,12 @@ public class TaskListModel implements ObservableSubject {
     public void SaveTasks() {
         // https://stackoverflow.com/questions/39538677/why-does-gson-tojson-always-return-null#answer-39539133
         Gson gson = new Gson();
-        java.lang.reflect.Type taskType = new TypeToken<ApsvTask>(){}.getType();
+        java.lang.reflect.Type taskType = new TypeToken<ApsvTask>() {
+        }.getType();
         ArrayList<String> jsons = new ArrayList<>();
         tasks.forEach(t -> {
+            //持久化时，所有任务状态置为停止
+            t.status = TaskStatus.STOPPED;
             String json = gson.toJson(t, taskType);
             jsons.add(json);
         });
