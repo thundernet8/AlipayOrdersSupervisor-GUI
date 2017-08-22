@@ -72,9 +72,20 @@ public class TaskListModel implements ObservableSubject {
      */
     public String ValidateAdding(ApsvTask task) {
         // 编辑任务的情况
-        if (task.id > 0 && tasks.stream().anyMatch(t -> StringUtils.equals(t.name, task.name) && t.id != task.id)) {
-            return "任务名不能重复";
+        if (task.id > 0) {
+            if (tasks.stream().anyMatch(t -> StringUtils.equals(t.name, task.name) && t.id != task.id)) {
+                return "任务名不能重复";
+            }
+            Optional<ApsvTask> op = tasks.stream().filter(t -> t.id == task.id).findFirst();
+            if (op.isPresent()) {
+                TaskStatus taskStatus = op.get().status;
+                if (taskStatus != TaskStatus.STOPPED) {
+                    return "不允许修改正在执行的任务，请先停止任务";
+                }
+            }
+            return "";
         }
+
         // 新增任务的情况
         if (task.id == 0 && tasks.stream().anyMatch(t -> StringUtils.equals(t.name, task.name))) {
             return "任务名不能重复";
@@ -84,15 +95,7 @@ public class TaskListModel implements ObservableSubject {
 
     public void AddTask(ApsvTask task) {
         if (task.id > 0) {
-            Optional<ApsvTask> op = tasks.stream().filter(t -> t.id == task.id).findFirst();
-            if (op.isPresent()) {
-                TaskStatus taskStatus = op.get().status;
-                if (taskStatus == TaskStatus.RUNNING || taskStatus == TaskStatus.INERROR) {
-                    //TODO 弹框提示：不允许修改正在执行的任务，请先停止任务;
-                    return;
-                }
-                this.tasks.removeIf(t -> t.id == task.id);
-            }
+            this.tasks.removeIf(t -> t.id == task.id);
         } else {
             task.id = this.tasks.size() + 1;
         }
